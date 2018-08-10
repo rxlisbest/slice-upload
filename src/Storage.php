@@ -53,13 +53,13 @@ class Storage
                 file_put_contents($full_file, $stream0, FILE_APPEND);
                 unlink($slice_file);
             }
-            file_put_contents($full_file, $stream, FILE_APPEND);
-            move_uploaded_file($full_file, $filename);
+            file_put_contents($full_file, $this->stream, FILE_APPEND);
+            $result = copy($full_file, $filename);
             unlink($full_file);
         }
         else{
             $slice_file = $this->getSliceFile($this->chunk);
-            file_put_contents($slice_file, $stream);
+            file_put_contents($slice_file, $this->stream);
         }
     }
 
@@ -69,9 +69,5 @@ class Storage
 
     private function getSliceFile($chunk){
         return sprintf("%s%s_%s", $this->temp_dir, $this->name, $chunk);
-    }
-
-    public function getStream(){
-        return file_get_contents("php://input");
     }
 }

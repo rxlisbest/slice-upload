@@ -21,11 +21,11 @@ class SliceUpload
         else{
             $this->request = $request;
         }
-        $this->upload = new Request();
+        $this->upload = new Storage();
     }
 
-    public function saveAS($filename){
-        return $upload->setName($this->request->name)
+    public function saveAs($filename){
+        return $this->upload->setName($this->request->name)
                     ->setChunk($this->request->chunk)
                     ->setChunks($this->request->chunks)
                     ->setTempDir($this->request->temp_dir)

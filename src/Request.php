@@ -19,6 +19,11 @@ class Request
 
 
     public function __construct(){
+        $this->setName()
+            ->setChunk()
+            ->setChunks()
+            ->setTempDir()
+            ->setStream();
     }
 
     public function setChunk(){

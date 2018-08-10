@@ -1,0 +1,12 @@
+{
+    "name": "rxlisbest/slice-upload",
+    "description": "slice upload php library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Roy",
+            "email": "rxlisbest@gmail.com"
+        }
+    ],
+    "require": {}
+}

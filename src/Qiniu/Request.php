@@ -12,8 +12,8 @@ namespace Rxlisbest\SliceUpload\Qiniu;
 class Request
 {
     public $name; // 文件名称
-    public $chunk; // 当前chunk数
-    public $chunks; // chunk总数
+    public $chunk = 0; // 当前chunk数
+    public $chunks = 1; // chunk总数
     public $temp_dir; // 临时目录
     public $stream; // 文件流
 
@@ -36,7 +36,9 @@ class Request
      * @time: 2017-06-19 10:00:00
      */
     public function setChunk(){
-        $this->chunk = $_GET['chunk'];
+        if(isset($_GET['chunk'])){
+            $this->chunk = $_GET['chunk'];
+        }
         return $this;
     }
 
@@ -48,7 +50,9 @@ class Request
      * @time: 2017-06-19 10:00:00
      */
     public function setChunks(){
-        $this->chunks = $_GET['chunks'];
+        if(isset($_GET['chunks'])){
+            $this->chunks = $_GET['chunks'];
+        }
         return $this;
     }
 

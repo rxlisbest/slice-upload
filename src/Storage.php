@@ -8,12 +8,11 @@
 
 namespace Rxlisbest\SliceUpload;
 
-
 class Storage
 {
     private $name; // 文件名称
-    private $chunk; // 当前chunk数
-    private $chunks; // chunk总数
+    private $chunk = 0; // 当前chunk数
+    private $chunks = 1; // chunk总数
     private $temp_dir; // 临时目录
     private $stream; // 文件流
 
@@ -31,7 +30,9 @@ class Storage
      * @time: 2017-06-19 10:00:00
      */
     public function setChunk($chunk){
-        $this->chunk = $chunk;
+        if($chunk){
+            $this->chunk = $chunk;
+        }
         return $this;
     }
 
@@ -44,7 +45,9 @@ class Storage
      * @time: 2017-06-19 10:00:00
      */
     public function setChunks($chunks){
-        $this->chunks = $chunks;
+        if($chunks){
+            $this->chunks = $chunks;
+        }
         return $this;
     }
 
@@ -57,6 +60,9 @@ class Storage
      * @time: 2017-06-19 10:00:00
      */
     public function setName($name){
+        if(!$name){
+            throw new \Exception("Name can not be empty.");
+        }
         $this->name = $name;
         return $this;
     }
@@ -70,6 +76,9 @@ class Storage
      * @time: 2017-06-19 10:00:00
      */
     public function setTempDir($temp_dir){
+        if(!$temp_dir){
+            throw new \Exception("Temp dir can not be empty.");
+        }
         $this->temp_dir = $temp_dir;
         return $this;
     }
@@ -83,6 +92,9 @@ class Storage
      * @time: 2017-06-19 10:00:00
      */
     public function setStream($stream){
+        if(!$stream){
+            throw new \Exception("Stream can not be empty.");
+        }
         $this->stream = $stream;
         return $this;
     }
@@ -96,17 +108,37 @@ class Storage
      * @time: 2017-06-19 10:00:00
      */
     public function save($filename){
-        if($this->chunk + 1 == $this->chunks){ // 最后一个chunk
-            $full_file = $this->getFullFile();
-            for($i = 0; $i < $this->chunks - 1; $i ++){
-                $slice_file = $this->getSliceFile($i);
-                $stream0 = file_get_contents($slice_file);
-                file_put_contents($full_file, $stream0, FILE_APPEND);
-                unlink($slice_file);
+        $merge = true;
+        // 遍历检查分片是否全部上传
+        for($i = 0; $i < $this->chunks; $i ++){
+            if($this->chunk == $i){
+                continue;
             }
-            file_put_contents($full_file, $this->stream, FILE_APPEND);
+
+            $slice_file = $this->getSliceFile($i);
+            if(!is_file($slice_file)){ // 如果分片没有全部上传，则不合并文件
+                $merge = false;
+                break;
+            }
+        }
+
+        if($merge){
+            $full_file = $this->getFullFile();
+            for($i = 0; $i < $this->chunks; $i ++){
+                if($this->chunk == $i){ // 当前分片直接合并
+                    $stream0 = $this->stream;
+                    file_put_contents($full_file, $stream0, FILE_APPEND);
+                }
+                else{ // 非当前分片读取后合并
+                    $slice_file = $this->getSliceFile($i);
+                    $stream0 = file_get_contents($slice_file);
+                    file_put_contents($full_file, $stream0, FILE_APPEND);
+                    unlink($slice_file);
+                }
+
+            }
             $result = copy($full_file, $filename);
-            unlink($full_file);
+            unlink($full_file); // 删除合并后的文件
         }
         else{
             $slice_file = $this->getSliceFile($this->chunk);

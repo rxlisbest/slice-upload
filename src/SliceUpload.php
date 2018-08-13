@@ -8,6 +8,7 @@
 
 namespace Rxlisbest\SliceUpload;
 
+use Rxlisbest\SliceUpload\WebUploader\Request;
 
 class SliceUpload
 {

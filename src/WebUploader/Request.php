@@ -6,7 +6,7 @@
  * Time: 下午2:57
  */
 
-namespace Rxlisbest\SliceUpload;
+namespace Rxlisbest\SliceUpload\WebUploader;
 
 
 class Request
@@ -36,7 +36,7 @@ class Request
      * @time: 2017-06-19 10:00:00
      */
     public function setChunk(){
-        $this->chunk = $_GET['chunk'];
+        $this->chunk = $_POST['chunk'];
         return $this;
     }
 
@@ -48,7 +48,7 @@ class Request
      * @time: 2017-06-19 10:00:00
      */
     public function setChunks(){
-        $this->chunks = $_GET['chunks'];
+        $this->chunks = $_POST['chunks'];
         return $this;
     }
 
@@ -60,7 +60,7 @@ class Request
      * @time: 2017-06-19 10:00:00
      */
     public function setName(){
-        $this->name = $_GET['name'];
+        $this->name = $_POST['name'];
         return $this;
     }
 
@@ -84,7 +84,7 @@ class Request
      * @time: 2017-06-19 10:00:00
      */
     public function setStream(){
-        $this->stream = file_get_contents("php://input");
+        $this->stream = file_get_contents($_FILES['file']['tmp_name']);
         return $this;
     }
 }

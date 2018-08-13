@@ -108,41 +108,57 @@ class Storage
      * @time: 2017-06-19 10:00:00
      */
     public function save($filename){
-        $merge = true;
-        // 遍历检查分片是否全部上传
-        for($i = 0; $i < $this->chunks; $i ++){
-            if($this->chunk == $i){
-                continue;
+        // upload
+        $slice_file = $this->getSliceFile($this->chunk);
+        $result = file_put_contents($slice_file, $this->stream);
+        if(!$result){
+            return $result;
+        }
+        else{
+            if(!$result = $this->createVerifyFile($slice_file)){
+                return $result;
             }
+        }
 
+        // 遍历检查分片是否全部上传
+        $merge = true;
+        for($i = 0; $i < $this->chunks; $i ++){
             $slice_file = $this->getSliceFile($i);
-            if(!is_file($slice_file)){ // 如果分片没有全部上传，则不合并文件
+            if(!is_file($slice_file) || !$md5 = $this->getVerifyFileContent($slice_file) || md5_file($slice_file) != $md5){ // 如果分片没有全部上传，则不合并文件
                 $merge = false;
                 break;
             }
         }
 
         if($merge){
-            $full_file = $this->getFullFile();
-            for($i = 0; $i < $this->chunks; $i ++){
-                if($this->chunk == $i){ // 当前分片直接合并
-                    $stream0 = $this->stream;
-                    file_put_contents($full_file, $stream0, FILE_APPEND);
-                }
-                else{ // 非当前分片读取后合并
+            $result = true; // 返回值
+            // 增加并发状态的文件锁
+            $lock = $this->getLockFile();
+            $fp = fopen($this->getLockFile(), 'w+');
+            if(flock($fp, LOCK_EX | LOCK_NB)){
+                $full_file = $this->getFullFile();
+                for($i = 0; $i < $this->chunks; $i ++){
                     $slice_file = $this->getSliceFile($i);
                     $stream0 = file_get_contents($slice_file);
-                    file_put_contents($full_file, $stream0, FILE_APPEND);
-                    unlink($slice_file);
+                    $result = $result && file_put_contents($full_file, $stream0, FILE_APPEND);
+                    if($result){
+                        $this->deleteVerifyFile($slice_file);
+                        unlink($slice_file);
+                    }
                 }
-
+                if($result){
+                    if(is_file($filename)){
+                        throw new \Exception("File already exist.");
+                    }
+                    $result = $result && copy($full_file, $filename);
+                    unlink($full_file); // 删除合并后的文件
+                }
+                flock($fp, LOCK_UN);
+                fclose($fp);
+                unlink($lock);
+                return $result;
             }
-            $result = copy($full_file, $filename);
-            unlink($full_file); // 删除合并后的文件
-        }
-        else{
-            $slice_file = $this->getSliceFile($this->chunk);
-            file_put_contents($slice_file, $this->stream);
+            fclose($fp);
         }
     }
 
@@ -167,5 +183,61 @@ class Storage
      */
     private function getSliceFile($chunk){
         return sprintf("%s%s_%s", $this->temp_dir, $this->name, $chunk);
+    }
+
+    /**
+     * 获取文件锁
+     * @name: getLockFile
+     * @return string
+     * @author: RuiXinglong <ruixl@soocedu.com>
+     * @time: 2017-06-19 10:00:00
+     */
+    private function getLockFile(){
+        return sprintf("%s%s.lock", $this->temp_dir, md5($this->name));
+    }
+
+    /**
+     * 获取验证文件
+     * @name: getVerifyFileContent
+     * @param $filename
+     * @return bool|string
+     * @author: RuiXinglong <ruixl@soocedu.com>
+     * @time: 2017-06-19 10:00:00
+     */
+    private function getVerifyFileContent($filename){
+        $md5 = md5_file($filename);
+        $md5_filename = sprintf("%smd5_%s", $this->temp_dir, $md5);
+        if($result = is_file($md5_filename)){
+            return file_get_contents($md5_filename);
+        }
+        return $result;
+    }
+
+    /**
+     * 创建验证文件
+     * @name: createVerifyFile
+     * @param $filename
+     * @return bool|int
+     * @author: RuiXinglong <ruixl@soocedu.com>
+     * @time: 2017-06-19 10:00:00
+     */
+    private function createVerifyFile($filename){
+        $md5 = md5_file($filename);
+        $md5_filename = sprintf("%smd5_%s", $this->temp_dir, $md5);
+        return file_put_contents($md5_filename, $md5);
+    }
+
+    /**
+     * 删除验证文件
+     * @name: deleteVerifyFile
+     * @param $filename
+     * @return bool
+     * @author: RuiXinglong <ruixl@soocedu.com>
+     * @time: 2017-06-19 10:00:00
+     */
+    private function deleteVerifyFile($filename){
+        $md5 = md5_file($filename);
+        $md5_filename = sprintf("%smd5_%s", $this->temp_dir, $md5);
+        return unlink($md5_filename);
     }
 }

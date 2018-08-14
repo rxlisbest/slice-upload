@@ -11,6 +11,7 @@ namespace Rxlisbest\SliceUpload\WebUploader;
 
 class Request
 {
+    public $id;
     public $name; // 文件名称
     public $chunk = 0; // 当前chunk数
     public $chunks = 1; // chunk总数
@@ -35,7 +36,7 @@ class Request
      * @author: RuiXinglong <ruixl@soocedu.com>
      * @time: 2017-06-19 10:00:00
      */
-    public function setChunk(){
+    protected function setChunk(){
         if(isset($_POST['chunk'])){
             $this->chunk = $_POST['chunk'];
         }
@@ -49,7 +50,7 @@ class Request
      * @author: RuiXinglong <ruixl@soocedu.com>
      * @time: 2017-06-19 10:00:00
      */
-    public function setChunks(){
+    protected function setChunks(){
         if(isset($_POST['chunks'])){
             $this->chunks = $_POST['chunks'];
         }
@@ -63,7 +64,7 @@ class Request
      * @author: RuiXinglong <ruixl@soocedu.com>
      * @time: 2017-06-19 10:00:00
      */
-    public function setName(){
+    protected function setName(){
         $this->name = $_POST['name'];
         return $this;
     }
@@ -75,7 +76,7 @@ class Request
      * @author: RuiXinglong <ruixl@soocedu.com>
      * @time: 2017-06-19 10:00:00
      */
-    public function setTempDir(){
+    protected function setTempDir(){
         $this->temp_dir = sys_get_temp_dir();
         return $this;
     }
@@ -87,7 +88,7 @@ class Request
      * @author: RuiXinglong <ruixl@soocedu.com>
      * @time: 2017-06-19 10:00:00
      */
-    public function setStream(){
+    protected function setStream(){
         $this->stream = file_get_contents($_FILES['file']['tmp_name']);
         return $this;
     }

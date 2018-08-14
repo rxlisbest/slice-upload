@@ -108,8 +108,12 @@ class Storage
      * @time: 2017-06-19 10:00:00
      */
     public function save($filename){
+        // 判断文件是否存在
+        if(is_file($filename)){
+            throw new \Exception("File already exist.");
+        }
         // upload
-        $slice_file = $this->getSliceFile($this->chunk);
+        $slice_file = $this->getSliceFile($filename, $this->chunk);
         $result = file_put_contents($slice_file, $this->stream);
         if(!$result){
             return $result;
@@ -123,8 +127,8 @@ class Storage
         // 遍历检查分片是否全部上传
         $merge = true;
         for($i = 0; $i < $this->chunks; $i ++){
-            $slice_file = $this->getSliceFile($i);
-            if(!is_file($slice_file) || !$md5 = $this->getVerifyFileContent($slice_file) || md5_file($slice_file) != $md5){ // 如果分片没有全部上传，则不合并文件
+            $slice_file = $this->getSliceFile($filename, $i);
+            if(!is_file($slice_file) || !($md5 = $this->getVerifyFileContent($slice_file)) || md5_file($slice_file) != $md5){ // 如果分片没有全部上传，则不合并文件
                 $merge = false;
                 break;
             }
@@ -133,44 +137,25 @@ class Storage
         if($merge){
             $result = true; // 返回值
             // 增加并发状态的文件锁
-            $lock = $this->getLockFile();
+            $lock_file = $this->getLockFile();
             $fp = fopen($this->getLockFile(), 'w+');
             if(flock($fp, LOCK_EX | LOCK_NB)){
-                $full_file = $this->getFullFile();
                 for($i = 0; $i < $this->chunks; $i ++){
-                    $slice_file = $this->getSliceFile($i);
+                    $slice_file = $this->getSliceFile($filename, $i);
                     $stream0 = file_get_contents($slice_file);
-                    $result = $result && file_put_contents($full_file, $stream0, FILE_APPEND);
+                    $result = $result && file_put_contents($filename, $stream0, FILE_APPEND);
                     if($result){
                         $this->deleteVerifyFile($slice_file);
                         unlink($slice_file);
                     }
                 }
-                if($result){
-                    if(is_file($filename)){
-                        throw new \Exception("File already exist.");
-                    }
-                    $result = $result && copy($full_file, $filename);
-                    unlink($full_file); // 删除合并后的文件
-                }
                 flock($fp, LOCK_UN);
                 fclose($fp);
-                unlink($lock);
+                unlink($lock_file);
                 return $result;
             }
             fclose($fp);
         }
-    }
-
-    /**
-     * 获取文件
-     * @name: getFullFile
-     * @return string
-     * @author: RuiXinglong <ruixl@soocedu.com>
-     * @time: 2017-06-19 10:00:00
-     */
-    private function getFullFile(){
-        return sprintf("%s%s", $this->temp_dir, $this->name);
     }
 
     /**
@@ -181,8 +166,8 @@ class Storage
      * @author: RuiXinglong <ruixl@soocedu.com>
      * @time: 2017-06-19 10:00:00
      */
-    private function getSliceFile($chunk){
-        return sprintf("%s%s_%s", $this->temp_dir, $this->name, $chunk);
+    private function getSliceFile($filename, $chunk){
+        return sprintf("%s_%s", $filename, $chunk);
     }
 
     /**

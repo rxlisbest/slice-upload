@@ -11,7 +11,6 @@ namespace Rxlisbest\SliceUpload\WebUploader;
 
 class Request
 {
-    public $id;
     public $name; // 文件名称
     public $chunk = 0; // 当前chunk数
     public $chunks = 1; // chunk总数

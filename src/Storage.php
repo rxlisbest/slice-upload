@@ -156,6 +156,7 @@ class Storage
             }
             fclose($fp);
         }
+        return $result;
     }
 
     /**

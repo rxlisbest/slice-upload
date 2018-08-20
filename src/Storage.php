@@ -10,6 +10,11 @@ namespace Rxlisbest\SliceUpload;
 
 class Storage
 {
+    const STATUS_SLICE_SUCCESS = 'slice_success';
+    const STATUS_SLICE_FAILURE = 'slice_failure';
+    const STATUS_SUCCESS = 'success';
+    const STATUS_FAILURE = 'failure';
+
     private $name; // 文件名称
     private $chunk = 0; // 当前chunk数
     private $chunks = 1; // chunk总数
@@ -116,11 +121,21 @@ class Storage
         $slice_file = $this->getSliceFile($filename, $this->chunk);
         $result = file_put_contents($slice_file, $this->stream);
         if(!$result){
-            return $result;
+            if($this->chunks > 1){
+                return self::STATUS_FAILURE;
+            }
+            else{
+                return self::STATUS_SLICE_FAILURE;
+            }
         }
         else{
             if(!$result = $this->createVerifyFile($slice_file)){
-                return $result;
+                if($this->chunks > 1){
+                    return self::STATUS_FAILURE;
+                }
+                else{
+                    return self::STATUS_SLICE_FAILURE;
+                }
             }
         }
 
@@ -152,11 +167,23 @@ class Storage
                 flock($fp, LOCK_UN);
                 fclose($fp);
                 unlink($lock_file);
-                return $result;
+
+                if($result){
+                    return self::STATUS_SUCCESS;
+                }
+                else{
+                    return self::STATUS_FAILURE;
+                }
             }
             fclose($fp);
         }
-        return $result;
+
+        if($this->chunks > 1){
+            return self::STATUS_SLICE_SUCCESS;
+        }
+        else{
+            return self::STATUS_SUCCESS;
+        }
     }
 
     /**

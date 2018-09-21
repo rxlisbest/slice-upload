@@ -9,8 +9,9 @@
 namespace Rxlisbest\SliceUpload\Qiniu;
 
 
-class Request
+class Request extends \Rxlisbest\SliceUpload\Request
 {
+    public $key; // 文件存储名称
     public $name; // 文件名称
     public $chunk = 0; // 当前chunk数
     public $chunks = 1; // chunk总数
@@ -20,7 +21,8 @@ class Request
     /**
      * Request constructor.
      */
-    public function __construct(){
+    public function __construct()
+    {
         $this->setName()
             ->setChunk()
             ->setChunks()
@@ -35,8 +37,9 @@ class Request
      * @author: RuiXinglong <ruixl@soocedu.com>
      * @time: 2017-06-19 10:00:00
      */
-    protected function setChunk(){
-        if(isset($_GET['chunk'])){
+    protected function setChunk()
+    {
+        if (isset($_GET['chunk'])) {
             $this->chunk = $_GET['chunk'];
         }
         return $this;
@@ -49,10 +52,25 @@ class Request
      * @author: RuiXinglong <ruixl@soocedu.com>
      * @time: 2017-06-19 10:00:00
      */
-    protected function setChunks(){
-        if(isset($_GET['chunks'])){
+    protected function setChunks()
+    {
+        if (isset($_GET['chunks'])) {
             $this->chunks = $_GET['chunks'];
         }
+        return $this;
+    }
+
+    /**
+     * 设置文件存储名称
+     * @name: setKey
+     * @param $key
+     * @return $this
+     * @author: RuiXinglong <ruixl@soocedu.com>
+     * @time: 2017-06-19 10:00:00
+     */
+    public function setKey($key)
+    {
+        $this->key = $key;
         return $this;
     }
 
@@ -63,8 +81,11 @@ class Request
      * @author: RuiXinglong <ruixl@soocedu.com>
      * @time: 2017-06-19 10:00:00
      */
-    protected function setName(){
-        $this->name = $_GET['name'];
+    protected function setName()
+    {
+        if (isset($_GET['name'])) {
+            $this->name = $_GET['name'];
+        }
         return $this;
     }
 
@@ -75,7 +96,8 @@ class Request
      * @author: RuiXinglong <ruixl@soocedu.com>
      * @time: 2017-06-19 10:00:00
      */
-    protected function setTempDir(){
+    protected function setTempDir()
+    {
         $this->temp_dir = sys_get_temp_dir();
         return $this;
     }
@@ -87,7 +109,8 @@ class Request
      * @author: RuiXinglong <ruixl@soocedu.com>
      * @time: 2017-06-19 10:00:00
      */
-    protected function setStream(){
+    protected function setStream()
+    {
         $this->stream = file_get_contents("php://input");
         return $this;
     }

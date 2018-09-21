@@ -9,8 +9,9 @@
 namespace Rxlisbest\SliceUpload\WebUploader;
 
 
-class Request
+class Request extends \Rxlisbest\SliceUpload\Request
 {
+    public $key; // 文件存储名称
     public $name; // 文件名称
     public $chunk = 0; // 当前chunk数
     public $chunks = 1; // chunk总数
@@ -20,8 +21,10 @@ class Request
     /**
      * Request constructor.
      */
-    public function __construct(){
-        $this->setName()
+    public function __construct()
+    {
+        $this->setKey()
+            ->setName()
             ->setChunk()
             ->setChunks()
             ->setTempDir()
@@ -35,8 +38,9 @@ class Request
      * @author: RuiXinglong <ruixl@soocedu.com>
      * @time: 2017-06-19 10:00:00
      */
-    protected function setChunk(){
-        if(isset($_POST['chunk'])){
+    protected function setChunk()
+    {
+        if (isset($_POST['chunk'])) {
             $this->chunk = $_POST['chunk'];
         }
         return $this;
@@ -49,9 +53,29 @@ class Request
      * @author: RuiXinglong <ruixl@soocedu.com>
      * @time: 2017-06-19 10:00:00
      */
-    protected function setChunks(){
-        if(isset($_POST['chunks'])){
+    protected function setChunks()
+    {
+        if (isset($_POST['chunks'])) {
             $this->chunks = $_POST['chunks'];
+        }
+        return $this;
+    }
+
+    /**
+     * 设置文件存储名称
+     * @name: setKey
+     * @param $key
+     * @return $this
+     * @author: RuiXinglong <ruixl@soocedu.com>
+     * @time: 2017-06-19 10:00:00
+     */
+    public function setKey($key = '')
+    {
+        if (isset($_POST['key'])) {
+            $this->key = $_POST['key'];
+        }
+        if ($key) {
+            $this->key = $key;
         }
         return $this;
     }
@@ -63,7 +87,8 @@ class Request
      * @author: RuiXinglong <ruixl@soocedu.com>
      * @time: 2017-06-19 10:00:00
      */
-    protected function setName(){
+    protected function setName()
+    {
         $this->name = $_POST['name'];
         return $this;
     }
@@ -75,7 +100,8 @@ class Request
      * @author: RuiXinglong <ruixl@soocedu.com>
      * @time: 2017-06-19 10:00:00
      */
-    protected function setTempDir(){
+    protected function setTempDir()
+    {
         $this->temp_dir = sys_get_temp_dir();
         return $this;
     }
@@ -87,7 +113,8 @@ class Request
      * @author: RuiXinglong <ruixl@soocedu.com>
      * @time: 2017-06-19 10:00:00
      */
-    protected function setStream(){
+    protected function setStream()
+    {
         $this->stream = file_get_contents($_FILES['file']['tmp_name']);
         return $this;
     }

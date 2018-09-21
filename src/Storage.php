@@ -15,16 +15,25 @@ class Storage
     const STATUS_SUCCESS = 'success';
     const STATUS_FAILURE = 'failure';
 
+    private $key; // 文件存储名称
     private $name; // 文件名称
     private $chunk = 0; // 当前chunk数
     private $chunks = 1; // chunk总数
     private $temp_dir; // 临时目录
     private $stream; // 文件流
 
+    private $dir; // 存储目录
+
     /**
      * Storage constructor.
      */
-    public function __construct(){}
+    public function __construct($directory)
+    {
+        if (!$directory) {
+            throw new \Exception("Directory can not be empty.");
+        }
+        $this->dir = $directory;
+    }
 
     /**
      * 设置chunk
@@ -34,8 +43,9 @@ class Storage
      * @author: RuiXinglong <ruixl@soocedu.com>
      * @time: 2017-06-19 10:00:00
      */
-    public function setChunk($chunk){
-        if($chunk){
+    public function setChunk($chunk)
+    {
+        if ($chunk) {
             $this->chunk = $chunk;
         }
         return $this;
@@ -49,10 +59,28 @@ class Storage
      * @author: RuiXinglong <ruixl@soocedu.com>
      * @time: 2017-06-19 10:00:00
      */
-    public function setChunks($chunks){
-        if($chunks){
+    public function setChunks($chunks)
+    {
+        if ($chunks) {
             $this->chunks = $chunks;
         }
+        return $this;
+    }
+
+    /**
+     * 设置文件存储名称
+     * @name: setKey
+     * @param $key
+     * @return $this
+     * @author: RuiXinglong <ruixl@soocedu.com>
+     * @time: 2017-06-19 10:00:00
+     */
+    public function setKey($key)
+    {
+        if (!$key) {
+            throw new \Exception("Key can not be empty.");
+        }
+        $this->key = $key;
         return $this;
     }
 
@@ -64,8 +92,9 @@ class Storage
      * @author: RuiXinglong <ruixl@soocedu.com>
      * @time: 2017-06-19 10:00:00
      */
-    public function setName($name){
-        if(!$name){
+    public function setName($name)
+    {
+        if (!$name) {
             throw new \Exception("Name can not be empty.");
         }
         $this->name = $name;
@@ -80,8 +109,9 @@ class Storage
      * @author: RuiXinglong <ruixl@soocedu.com>
      * @time: 2017-06-19 10:00:00
      */
-    public function setTempDir($temp_dir){
-        if(!$temp_dir){
+    public function setTempDir($temp_dir)
+    {
+        if (!$temp_dir) {
             throw new \Exception("Temp dir can not be empty.");
         }
         $this->temp_dir = $temp_dir;
@@ -96,8 +126,9 @@ class Storage
      * @author: RuiXinglong <ruixl@soocedu.com>
      * @time: 2017-06-19 10:00:00
      */
-    public function setStream($stream){
-        if(!$stream){
+    public function setStream($stream)
+    {
+        if (!$stream) {
             throw new \Exception("Stream can not be empty.");
         }
         $this->stream = $stream;
@@ -112,28 +143,26 @@ class Storage
      * @author: RuiXinglong <ruixl@soocedu.com>
      * @time: 2017-06-19 10:00:00
      */
-    public function save($filename){
+    public function save($filename)
+    {
         // 判断文件是否存在
-        if(is_file($filename)){
+        if (is_file($filename)) {
             throw new \Exception("File already exist.");
         }
         // upload
         $slice_file = $this->getSliceFile($filename, $this->chunk);
         $result = file_put_contents($slice_file, $this->stream);
-        if(!$result){
-            if($this->chunks > 1){
+        if (!$result) {
+            if ($this->chunks > 1) {
                 return self::STATUS_FAILURE;
-            }
-            else{
+            } else {
                 return self::STATUS_SLICE_FAILURE;
             }
-        }
-        else{
-            if(!$result = $this->createVerifyFile($slice_file)){
-                if($this->chunks > 1){
+        } else {
+            if (!$result = $this->createVerifyFile($slice_file)) {
+                if ($this->chunks > 1) {
                     return self::STATUS_FAILURE;
-                }
-                else{
+                } else {
                     return self::STATUS_SLICE_FAILURE;
                 }
             }
@@ -141,25 +170,25 @@ class Storage
 
         // 遍历检查分片是否全部上传
         $merge = true;
-        for($i = 0; $i < $this->chunks; $i ++){
+        for ($i = 0; $i < $this->chunks; $i++) {
             $slice_file = $this->getSliceFile($filename, $i);
-            if(!is_file($slice_file) || !($md5 = $this->getVerifyFileContent($slice_file)) || md5_file($slice_file) != $md5){ // 如果分片没有全部上传，则不合并文件
+            if (!is_file($slice_file) || !($md5 = $this->getVerifyFileContent($slice_file)) || md5_file($slice_file) != $md5) { // 如果分片没有全部上传，则不合并文件
                 $merge = false;
                 break;
             }
         }
 
-        if($merge){
+        if ($merge) {
             $result = true; // 返回值
             // 增加并发状态的文件锁
             $lock_file = $this->getLockFile();
             $fp = fopen($this->getLockFile(), 'w+');
-            if(flock($fp, LOCK_EX | LOCK_NB)){
-                for($i = 0; $i < $this->chunks; $i ++){
+            if (flock($fp, LOCK_EX | LOCK_NB)) {
+                for ($i = 0; $i < $this->chunks; $i++) {
                     $slice_file = $this->getSliceFile($filename, $i);
                     $stream0 = file_get_contents($slice_file);
                     $result = $result && file_put_contents($filename, $stream0, FILE_APPEND);
-                    if($result){
+                    if ($result) {
                         $this->deleteVerifyFile($slice_file);
                         unlink($slice_file);
                     }
@@ -168,20 +197,18 @@ class Storage
                 fclose($fp);
                 unlink($lock_file);
 
-                if($result){
+                if ($result) {
                     return self::STATUS_SUCCESS;
-                }
-                else{
+                } else {
                     return self::STATUS_FAILURE;
                 }
             }
             fclose($fp);
         }
 
-        if($this->chunks > 1){
+        if ($this->chunks > 1) {
             return self::STATUS_SLICE_SUCCESS;
-        }
-        else{
+        } else {
             return self::STATUS_SUCCESS;
         }
     }
@@ -194,7 +221,8 @@ class Storage
      * @author: RuiXinglong <ruixl@soocedu.com>
      * @time: 2017-06-19 10:00:00
      */
-    private function getSliceFile($filename, $chunk){
+    private function getSliceFile($filename, $chunk)
+    {
         return sprintf("%s_%s", $filename, $chunk);
     }
 
@@ -205,7 +233,8 @@ class Storage
      * @author: RuiXinglong <ruixl@soocedu.com>
      * @time: 2017-06-19 10:00:00
      */
-    private function getLockFile(){
+    private function getLockFile()
+    {
         return sprintf("%s%s.lock", $this->temp_dir, md5($this->name));
     }
 
@@ -217,10 +246,11 @@ class Storage
      * @author: RuiXinglong <ruixl@soocedu.com>
      * @time: 2017-06-19 10:00:00
      */
-    private function getVerifyFileContent($filename){
+    private function getVerifyFileContent($filename)
+    {
         $md5 = md5_file($filename);
         $md5_filename = sprintf("%smd5_%s", $this->temp_dir, $md5);
-        if($result = is_file($md5_filename)){
+        if ($result = is_file($md5_filename)) {
             return file_get_contents($md5_filename);
         }
         return $result;
@@ -234,7 +264,8 @@ class Storage
      * @author: RuiXinglong <ruixl@soocedu.com>
      * @time: 2017-06-19 10:00:00
      */
-    private function createVerifyFile($filename){
+    private function createVerifyFile($filename)
+    {
         $md5 = md5_file($filename);
         $md5_filename = sprintf("%smd5_%s", $this->temp_dir, $md5);
         return file_put_contents($md5_filename, $md5);
@@ -248,7 +279,8 @@ class Storage
      * @author: RuiXinglong <ruixl@soocedu.com>
      * @time: 2017-06-19 10:00:00
      */
-    private function deleteVerifyFile($filename){
+    private function deleteVerifyFile($filename)
+    {
         $md5 = md5_file($filename);
         $md5_filename = sprintf("%smd5_%s", $this->temp_dir, $md5);
         return unlink($md5_filename);

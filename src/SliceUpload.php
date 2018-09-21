@@ -8,8 +8,6 @@
 
 namespace Rxlisbest\SliceUpload;
 
-use Rxlisbest\SliceUpload\WebUploader\Request;
-
 class SliceUpload
 {
     protected $request; // 请求类
@@ -19,31 +17,54 @@ class SliceUpload
      * SliceUpload constructor.
      * @param bool $request
      */
-    public function __construct($request = false)
+    public function __construct($directory, $key = '')
     {
-        if(!$request){
-            $this->request = new Request();
+        if (!$directory) {
+            throw new Exception("Directory can not be empty");
         }
-        else{
-            $this->request = $request;
+
+        $header = getallheaders();
+
+        if (!strpos($header['Content-Type'], 'multipart/form-data') !== false) {
+            $request = new \Rxlisbest\SliceUpload\WebUploader\Request();
+        } else {
+            $request = new \Rxlisbest\SliceUpload\Qiniu\Request();
+            $request->setKey($key);
         }
-        $this->upload = new Storage();
+        $this->request = $request;
+        $this->upload = new Storage($directory);
     }
 
     /**
      * 保存
-     * @name: saveAs
+     * @name: save
      * @param $filename
      * @return void
      * @author: RuiXinglong <ruixl@soocedu.com>
      * @time: 2017-06-19 10:00:00
      */
-    public function saveAs($filename){
-        return $this->upload->setName($this->request->name)
-                    ->setChunk($this->request->chunk)
-                    ->setChunks($this->request->chunks)
-                    ->setTempDir($this->request->temp_dir)
-                    ->setStream($this->request->stream)
-                    ->save($filename);
+    public function save()
+    {
+        return $this->upload
+            ->setKey($this->request->key)
+            ->setName($this->request->name)
+            ->setChunk($this->request->chunk)
+            ->setChunks($this->request->chunks)
+            ->setTempDir($this->request->temp_dir)
+            ->setStream($this->request->stream)
+            ->save($filename);
+    }
+}
+
+if (!function_exists('getallheaders')) {
+    function getallheaders()
+    {
+        $headers = [];
+        foreach ($_SERVER as $name => $value) {
+            if (substr($name, 0, 5) == 'HTTP_') {
+                $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value;
+            }
+        }
+        return $headers;
     }
 }

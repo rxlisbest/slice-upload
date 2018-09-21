@@ -236,7 +236,7 @@ class Storage
      */
     private function getLockFile()
     {
-        return sprintf("%s%s.lock", $this->temp_dir, md5($this->name));
+        return sprintf("%s%s.lock", $this->temp_dir, md5($this->key));
     }
 
     /**

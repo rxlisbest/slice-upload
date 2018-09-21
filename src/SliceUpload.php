@@ -25,8 +25,8 @@ class SliceUpload
 
         $header = getallheaders();
         $content_type = '';
-        foreach ($header as $k => $v){
-            if(strtolower($k) == 'content-type'){
+        foreach ($header as $k => $v) {
+            if (strtolower($k) == 'content-type') {
                 $content_type = $v;
             }
         }
@@ -74,7 +74,8 @@ class SliceUpload
      * @author: RuiXinglong <ruixl@soocedu.com>
      * @time: 2017-06-19 10:00:00
      */
-    public function rename($key){
+    public function rename($key)
+    {
         return $this->upload->rename($key);
     }
 }

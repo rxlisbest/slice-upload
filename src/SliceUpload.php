@@ -20,17 +20,22 @@ class SliceUpload
     public function __construct($directory, $key = '')
     {
         if (!$directory) {
-            throw new Exception("Directory can not be empty");
+            throw new Exception("Directory can not be empty.");
         }
 
         $header = getallheaders();
 
-        if (!strpos($header['Content-Type'], 'multipart/form-data') !== false) {
+        if (strpos($header['Content-Type'], 'multipart/form-data') !== false) {
             $request = new \Rxlisbest\SliceUpload\WebUploader\Request();
-        } else {
+        } else if (strpos($header['Content-Type'], 'application/octet-stream') !== false) {
+
             $request = new \Rxlisbest\SliceUpload\Qiniu\Request();
-            $request->setKey($key);
+        } else {
+            throw new Exception("Content-Type is not to be supported
+
+.");
         }
+        $request->setKey($key);
         $this->request = $request;
         $this->upload = new Storage($directory);
     }
@@ -52,7 +57,7 @@ class SliceUpload
             ->setChunks($this->request->chunks)
             ->setTempDir($this->request->temp_dir)
             ->setStream($this->request->stream)
-            ->save($filename);
+            ->save();
     }
 }
 

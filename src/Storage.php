@@ -5,9 +5,9 @@
  * Date: 2018/8/10
  * Time: 下午1:52
  */
-
 namespace Rxlisbest\SliceUpload;
 
+define('DS', DIRECTORY_SEPARATOR);
 class Storage
 {
     const STATUS_SLICE_SUCCESS = 'slice_success';
@@ -143,8 +143,9 @@ class Storage
      * @author: RuiXinglong <ruixl@soocedu.com>
      * @time: 2017-06-19 10:00:00
      */
-    public function save($filename)
+    public function save()
     {
+        $filename = $this->dir . DS . $this->key;
         // 判断文件是否存在
         if (is_file($filename)) {
             throw new \Exception("File already exist.");

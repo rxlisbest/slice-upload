@@ -49,6 +49,6 @@ composer require rxlisbest/slice-upload=~0.1.0
 ```
 use Rxlisbest\SliceUpload\SliceUpload;
 
-$upload = new SliceUpload();
-$upload->saveAs($_SERVER['DOCUMENT_ROOT'] . '/' . $_POST['name']);
+$upload = new SliceUpload($_SERVER['DOCUMENT_ROOT']);
+$upload->saveAs($_POST['name']);
 ```

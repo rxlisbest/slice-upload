@@ -24,10 +24,16 @@ class SliceUpload
         }
 
         $header = getallheaders();
+        $content_type = '';
+        foreach ($header as $k => $v){
+            if(strtolower($k) == 'content-type'){
+                $content_type = $v;
+            }
+        }
 
-        if (strpos($header['Content-Type'], 'multipart/form-data') !== false) {
+        if (strpos($content_type, 'multipart/form-data') !== false) {
             $request = new \Rxlisbest\SliceUpload\WebUploader\Request();
-        } else if (strpos($header['Content-Type'], 'application/octet-stream') !== false) {
+        } else if (strpos($content_type, 'application/octet-stream') !== false) {
 
             $request = new \Rxlisbest\SliceUpload\Qiniu\Request();
         } else {

@@ -286,4 +286,24 @@ class Storage
         $md5_filename = sprintf("%smd5_%s", $this->temp_dir, $md5);
         return unlink($md5_filename);
     }
+
+    /**
+     * 文件重命名
+     * @name: rename
+     * @param $key
+     * @return bool
+     * @author: RuiXinglong <ruixl@soocedu.com>
+     * @time: 2017-06-19 10:00:00
+     */
+    public function rename($key){
+        if(!$key){
+            throw new \Exception("New file name can not be empty.");
+        }
+        $old_filename = $this->dir . DS . $this->key;
+        $new_filename = $this->dir . DS . $key;
+        if(!is_file($old_filename)){
+            throw new \Exception("File is not exist.");
+        }
+        return rename($old_filename, $new_filename);
+    }
 }

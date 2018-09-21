@@ -17,7 +17,7 @@ class SliceUpload
      * SliceUpload constructor.
      * @param bool $request
      */
-    public function __construct($directory, $key = '')
+    public function __construct($directory)
     {
         if (!$directory) {
             throw new Exception("Directory can not be empty.");
@@ -41,7 +41,6 @@ class SliceUpload
 
 .");
         }
-        $request->setKey($key);
         $this->request = $request;
         $this->upload = new Storage($directory);
     }
@@ -54,8 +53,9 @@ class SliceUpload
      * @author: RuiXinglong <ruixl@soocedu.com>
      * @time: 2017-06-19 10:00:00
      */
-    public function save()
+    public function save($key = '')
     {
+        $this->request->setKey($key);
         return $this->upload
             ->setKey($this->request->key)
             ->setName($this->request->name)
@@ -64,6 +64,18 @@ class SliceUpload
             ->setTempDir($this->request->temp_dir)
             ->setStream($this->request->stream)
             ->save();
+    }
+
+    /**
+     * 重命名文件
+     * @name: rename
+     * @param $key
+     * @return bool
+     * @author: RuiXinglong <ruixl@soocedu.com>
+     * @time: 2017-06-19 10:00:00
+     */
+    public function rename($key){
+        return $this->upload->rename($key);
     }
 }
 

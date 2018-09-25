@@ -17,7 +17,7 @@ class SliceUpload
      * SliceUpload constructor.
      * @param bool $request
      */
-    public function __construct($directory)
+    public function __construct($directory, $key = '')
     {
         if (!$directory) {
             throw new Exception("Directory can not be empty.");
@@ -42,6 +42,8 @@ class SliceUpload
 .");
         }
         $this->request = $request;
+        $this->request->setKey($key);
+
         $this->upload = new Storage($directory);
     }
 
@@ -53,9 +55,8 @@ class SliceUpload
      * @author: RuiXinglong <ruixl@soocedu.com>
      * @time: 2017-06-19 10:00:00
      */
-    public function save($key = '')
+    public function save()
     {
-        $this->request->setKey($key);
         return $this->upload
             ->setKey($this->request->key)
             ->setName($this->request->name)

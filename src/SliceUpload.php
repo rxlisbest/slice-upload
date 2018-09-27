@@ -20,7 +20,7 @@ class SliceUpload
     public function __construct($directory, $key = '')
     {
         if (!$directory) {
-            throw new Exception("Directory can not be empty.");
+            throw new \Exception("Directory can not be empty.");
         }
 
         $header = getallheaders();
@@ -37,7 +37,7 @@ class SliceUpload
 
             $request = new \Rxlisbest\SliceUpload\Qiniu\Request();
         } else {
-            throw new Exception("Content-Type is not to be supported
+            throw new \Exception("Content-Type is not to be supported
 
 .");
         }

@@ -17,53 +17,32 @@ class SliceUpload
      * SliceUpload constructor.
      * @param bool $request
      */
-    public function __construct($directory, $key = '')
+    public function __construct($directory)
     {
         if (!$directory) {
             throw new \Exception("Directory can not be empty.");
         }
-
-        $header = getallheaders();
-        $content_type = '';
-        foreach ($header as $k => $v) {
-            if (strtolower($k) == 'content-type') {
-                $content_type = $v;
-            }
-        }
-
-        if (strpos($content_type, 'multipart/form-data') !== false) {
-            $request = new \Rxlisbest\SliceUpload\WebUploader\Request();
-        } else if (strpos($content_type, 'application/octet-stream') !== false) {
-
-            $request = new \Rxlisbest\SliceUpload\Qiniu\Request();
-        } else {
-            throw new \Exception("Content-Type is not to be supported
-
-.");
-        }
-        $this->request = $request;
-        $this->request->setKey($key);
-
         $this->upload = new Storage($directory);
     }
 
     /**
      * 保存
      * @name: save
-     * @param $filename
+     * @param $key
      * @return void
      * @author: RuiXinglong <ruixl@soocedu.com>
      * @time: 2017-06-19 10:00:00
      */
-    public function save()
+    public function save($key)
     {
+        $request = $this->getRequest($key);
         return $this->upload
-            ->setKey($this->request->key)
-            ->setName($this->request->name)
-            ->setChunk($this->request->chunk)
-            ->setChunks($this->request->chunks)
-            ->setTempDir($this->request->temp_dir)
-            ->setStream($this->request->stream)
+            ->setKey($request->key)
+            ->setName($request->name)
+            ->setChunk($request->chunk)
+            ->setChunks($request->chunks)
+            ->setTempDir($request->temp_dir)
+            ->setStream($request->stream)
             ->save();
     }
 
@@ -78,6 +57,38 @@ class SliceUpload
     public function rename($key)
     {
         return $this->upload->rename($key);
+    }
+
+    /**
+     * 获取请求类
+     * @name: getRequest
+     * @param $key
+     * @return Qiniu\Request|WebUploader\Request
+     * @author: RuiXinglong <ruixl@soocedu.com>
+     * @time: 2017-06-19 10:00:00
+     */
+    public function getRequest($key)
+    {
+        $header = getallheaders();
+        $content_type = '';
+        foreach ($header as $k => $v) {
+            if (strtolower($k) == 'content-type') {
+                $content_type = $v;
+            }
+        }
+
+        if (strpos($content_type, 'multipart/form-data') !== false) {
+            $request = new \Rxlisbest\SliceUpload\WebUploader\Request();
+        } else if (strpos($content_type, 'application/octet-stream') !== false) {
+            $request = new \Rxlisbest\SliceUpload\Qiniu\Request();
+        } else {
+            throw new \Exception("Content-Type is not to be supported
+
+.");
+        }
+
+        $request = $request->setKey($key);
+        return $request;
     }
 }
 

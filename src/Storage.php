@@ -292,21 +292,23 @@ class Storage
     /**
      * 文件重命名
      * @name: rename
+     * @param $old_key
      * @param $key
      * @return bool
      * @author: RuiXinglong <ruixl@soocedu.com>
      * @time: 2017-06-19 10:00:00
      */
-    public function rename($key)
+    public function rename($old_key, $key)
     {
         if (!$key) {
             throw new \Exception("New file name can not be empty.");
         }
-        $old_filename = $this->dir . DS . $this->key;
-        $new_filename = $this->dir . DS . $key;
+        $old_filename = $this->dir . DS . $old_key;
         if (!is_file($old_filename)) {
             throw new \Exception("File is not exist.");
         }
+
+        $new_filename = $this->dir . DS . $key;
         return rename($old_filename, $new_filename);
     }
 }

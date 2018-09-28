@@ -49,14 +49,15 @@ class SliceUpload
     /**
      * 重命名文件
      * @name: rename
+     * @param $old_key
      * @param $key
      * @return bool
      * @author: RuiXinglong <ruixl@soocedu.com>
      * @time: 2017-06-19 10:00:00
      */
-    public function rename($key)
+    public function rename($old_key, $key)
     {
-        return $this->upload->rename($key);
+        return $this->upload->rename($old_key, $key);
     }
 
     /**

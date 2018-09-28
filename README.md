@@ -51,5 +51,5 @@ use Rxlisbest\SliceUpload\SliceUpload;
 
 $upload = new SliceUpload($_SERVER['DOCUMENT_ROOT']);
 $upload->save($_POST['name']); // 上传
-$upload->rename($_POST['name']); // 重命名
+$upload->rename($_POST['name'], $_POST['name']); // 重命名
 ```

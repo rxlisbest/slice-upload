@@ -305,10 +305,13 @@ class Storage
         }
         $old_filename = $this->dir . DS . $old_key;
         if (!is_file($old_filename)) {
-            throw new \Exception("File is not exist.");
+            throw new \Exception("Source file is not exist.");
         }
 
         $new_filename = $this->dir . DS . $key;
+        if (is_file($new_filename)) {
+            throw new \Exception("Renamed file is already exist.");
+        }
         return rename($old_filename, $new_filename);
     }
 }

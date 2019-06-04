@@ -1,7 +1,7 @@
 # slice-upload
 - 安装
 ```
-composer require rxlisbest/slice-upload=~0.1.0
+composer require rxlisbest/slice-upload
 ```
 - Html
 ```

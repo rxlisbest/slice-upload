@@ -238,7 +238,7 @@ class Storage
      */
     private function getLockFile()
     {
-        return sprintf("%s%s.lock", $this->temp_dir, md5($this->key));
+        return sprintf("%s/%s.lock", $this->temp_dir, md5($this->key));
     }
 
     /**
@@ -252,7 +252,7 @@ class Storage
     private function getVerifyFileContent($filename)
     {
         $md5 = md5_file($filename);
-        $md5_filename = sprintf("%smd5_%s", $this->temp_dir, $md5);
+        $md5_filename = sprintf("%s/md5_%s", $this->temp_dir, $md5);
         if ($result = is_file($md5_filename)) {
             return file_get_contents($md5_filename);
         }
@@ -270,7 +270,7 @@ class Storage
     private function createVerifyFile($filename)
     {
         $md5 = md5_file($filename);
-        $md5_filename = sprintf("%smd5_%s", $this->temp_dir, $md5);
+        $md5_filename = sprintf("%s/md5_%s", $this->temp_dir, $md5);
         return file_put_contents($md5_filename, $md5);
     }
 
@@ -285,7 +285,7 @@ class Storage
     private function deleteVerifyFile($filename)
     {
         $md5 = md5_file($filename);
-        $md5_filename = sprintf("%smd5_%s", $this->temp_dir, $md5);
+        $md5_filename = sprintf("%s/md5_%s", $this->temp_dir, $md5);
         return unlink($md5_filename);
     }
 

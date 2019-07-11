@@ -11,12 +11,12 @@ namespace Rxlisbest\SliceUpload\Qiniu;
 
 class Request extends \Rxlisbest\SliceUpload\Request
 {
-    public $key; // 文件存储名称
-    public $name; // 文件名称
-    public $chunk = 0; // 当前chunk数
-    public $chunks = 1; // chunk总数
-    public $temp_dir; // 临时目录
-    public $stream; // 文件流
+    protected $key; // 文件存储名称
+    protected $name; // 文件名称
+    protected $chunk = 0; // 当前chunk数
+    protected $chunks = 1; // chunk总数
+    protected $temp_dir; // 临时目录
+    protected $stream; // 文件流
 
     /**
      * Request constructor.
@@ -28,6 +28,36 @@ class Request extends \Rxlisbest\SliceUpload\Request
             ->setChunks()
             ->setTempDir()
             ->setStream();
+    }
+
+    public function getKey()
+    {
+        return $this->key;
+    }
+
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    public function getChunk()
+    {
+        return $this->chunk;
+    }
+
+    public function getChunks()
+    {
+        return $this->chunks;
+    }
+
+    public function getTempDir()
+    {
+        return $this->temp_dir;
+    }
+
+    public function getStream()
+    {
+        return $this->stream;
     }
 
     /**

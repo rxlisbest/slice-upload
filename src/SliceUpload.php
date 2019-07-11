@@ -37,12 +37,12 @@ class SliceUpload
     {
         $request = $this->getRequest($key);
         return $this->upload
-            ->setKey($request->key)
-            ->setName($request->name)
-            ->setChunk($request->chunk)
-            ->setChunks($request->chunks)
-            ->setTempDir($request->temp_dir)
-            ->setStream($request->stream)
+            ->setKey($request->getKey())
+            ->setName($request->getName())
+            ->setChunk($request->getChunk())
+            ->setChunks($request->getChunks())
+            ->setTempDir($request->getTempDir())
+            ->setStream($request->getStream())
             ->save();
     }
 

@@ -10,6 +10,17 @@ namespace Rxlisbest\SliceUpload;
 
 abstract class Request
 {
+    abstract public function getKey();
+
+    abstract public function getName();
+
+    abstract public function getChunk();
+
+    abstract public function getChunks();
+
+    abstract public function getTempDir();
+
+    abstract public function getStream();
     /**
      * 设置chunk
      * @name: setChunk

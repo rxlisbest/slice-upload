@@ -6,10 +6,9 @@
  * Time: 下午2:57
  */
 
-namespace Rxlisbest\SliceUpload\WebUploader;
+namespace Rxlisbest\SliceUpload\Request;
 
-
-class Request extends \Rxlisbest\SliceUpload\Request
+class WebUploaderRequest implements RequestInterface
 {
     protected $key; // 文件存储名称
     protected $name; // 文件名称
@@ -17,19 +16,6 @@ class Request extends \Rxlisbest\SliceUpload\Request
     protected $chunks = 1; // chunk总数
     protected $temp_dir; // 临时目录
     protected $stream; // 文件流
-
-    /**
-     * Request constructor.
-     */
-    public function __construct()
-    {
-        $this->setKey()
-            ->setName()
-            ->setChunk()
-            ->setChunks()
-            ->setTempDir()
-            ->setStream();
-    }
 
     public function getKey()
     {

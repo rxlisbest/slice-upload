@@ -54,7 +54,7 @@ class WebUploaderRequest implements RequestInterface
      * @author: RuiXinglong <ruixl@soocedu.com>
      * @time: 2017-06-19 10:00:00
      */
-    protected function setChunk()
+    public function setChunk()
     {
         if (isset($_POST['chunk'])) {
             $this->chunk = $_POST['chunk'];
@@ -69,7 +69,7 @@ class WebUploaderRequest implements RequestInterface
      * @author: RuiXinglong <ruixl@soocedu.com>
      * @time: 2017-06-19 10:00:00
      */
-    protected function setChunks()
+    public function setChunks()
     {
         if (isset($_POST['chunks'])) {
             $this->chunks = $_POST['chunks'];
@@ -103,7 +103,7 @@ class WebUploaderRequest implements RequestInterface
      * @author: RuiXinglong <ruixl@soocedu.com>
      * @time: 2017-06-19 10:00:00
      */
-    protected function setName()
+    public function setName()
     {
         $this->name = $_POST['name'];
         return $this;
@@ -116,7 +116,7 @@ class WebUploaderRequest implements RequestInterface
      * @author: RuiXinglong <ruixl@soocedu.com>
      * @time: 2017-06-19 10:00:00
      */
-    protected function setTempDir()
+    public function setTempDir()
     {
         $this->temp_dir = sys_get_temp_dir();
         return $this;
@@ -129,7 +129,7 @@ class WebUploaderRequest implements RequestInterface
      * @author: RuiXinglong <ruixl@soocedu.com>
      * @time: 2017-06-19 10:00:00
      */
-    protected function setStream()
+    public function setStream()
     {
         $this->stream = file_get_contents($_FILES['file']['tmp_name']);
         return $this;

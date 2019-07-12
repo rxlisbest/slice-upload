@@ -54,7 +54,7 @@ class QiniuRequest implements RequestInterface
      * @author: RuiXinglong <ruixl@soocedu.com>
      * @time: 2017-06-19 10:00:00
      */
-    protected function setChunk()
+    public function setChunk()
     {
         if (isset($_GET['chunk'])) {
             $this->chunk = $_GET['chunk'];
@@ -69,7 +69,7 @@ class QiniuRequest implements RequestInterface
      * @author: RuiXinglong <ruixl@soocedu.com>
      * @time: 2017-06-19 10:00:00
      */
-    protected function setChunks()
+    public function setChunks()
     {
         if (isset($_GET['chunks'])) {
             $this->chunks = $_GET['chunks'];
@@ -98,7 +98,7 @@ class QiniuRequest implements RequestInterface
      * @author: RuiXinglong <ruixl@soocedu.com>
      * @time: 2017-06-19 10:00:00
      */
-    protected function setName()
+    public function setName()
     {
         if (isset($_GET['name'])) {
             $this->name = $_GET['name'];
@@ -113,7 +113,7 @@ class QiniuRequest implements RequestInterface
      * @author: RuiXinglong <ruixl@soocedu.com>
      * @time: 2017-06-19 10:00:00
      */
-    protected function setTempDir()
+    public function setTempDir()
     {
         $this->temp_dir = sys_get_temp_dir();
         return $this;
@@ -126,7 +126,7 @@ class QiniuRequest implements RequestInterface
      * @author: RuiXinglong <ruixl@soocedu.com>
      * @time: 2017-06-19 10:00:00
      */
-    protected function setStream()
+    public function setStream()
     {
         $this->stream = file_get_contents("php://input");
         return $this;

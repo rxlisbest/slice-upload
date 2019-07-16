@@ -49,7 +49,7 @@ composer require rxlisbest/slice-upload
 ```
 use Rxlisbest\SliceUpload\SliceUpload;
 
-$upload = new SliceUpload($_SERVER['DOCUMENT_ROOT']);
-$upload->save($_POST['name']); // 上传
-$upload->rename($_POST['name'], $_POST['name']); // 重命名
+$upload = new SliceUpload('文件存储目录');
+$upload->save('文件存储名称'); // 上传
+$upload->rename('文件旧名称', '文件新名称'); // 重命名
 ```

@@ -11,7 +11,7 @@ namespace Rxlisbest\SliceUpload;
 class SliceUpload
 {
     protected $request; // 请求类
-    protected $upload; // 上传类
+    protected $storage; // 存储类
 
     /**
      * SliceUpload constructor.
@@ -22,7 +22,9 @@ class SliceUpload
         if (!$directory) {
             throw new \Exception("Directory can not be empty.");
         }
-        $this->upload = new Storage($directory);
+        $this->storage = new Storage($directory);
+        $factory = new RequestFactory();
+        $this->request = $factory->create($key);
     }
 
     /**
@@ -35,15 +37,13 @@ class SliceUpload
      */
     public function save($key)
     {
-        $factory = new RequestFactory();
-        $request = $factory->create($key);
-        return $this->upload
-            ->setKey($request->getKey())
-            ->setName($request->getName())
-            ->setChunk($request->getChunk())
-            ->setChunks($request->getChunks())
-            ->setTempDir($request->getTempDir())
-            ->setStream($request->getStream())
+        return $this->storage
+            ->setKey($this->request->getKey())
+            ->setName($this->request->getName())
+            ->setChunk($this->request->getChunk())
+            ->setChunks($this->request->getChunks())
+            ->setTempDir($this->request->getTempDir())
+            ->setStream($this->request->getStream())
             ->save();
     }
 
@@ -58,6 +58,6 @@ class SliceUpload
      */
     public function rename($old_key, $key)
     {
-        return $this->upload->rename($old_key, $key);
+        return $this->storage->rename($old_key, $key);
     }
 }

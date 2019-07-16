@@ -8,7 +8,7 @@ use Rxlisbest\SliceUpload\SliceUpload;
 
 class SliceUploadTest extends TestCase
 {
-    public function testIndex()
+    public function testSave()
     {
         $this->assertEquals(1, 1);
     }

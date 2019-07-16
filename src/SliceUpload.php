@@ -22,9 +22,19 @@ class SliceUpload
         if (!$directory) {
             throw new \Exception("Directory can not be empty.");
         }
-        $this->storage = new Storage($directory);
+        $this->storage = $this->initStorage();
+        $this->request = $this->initRequest();
+    }
+
+    protected function initStorage()
+    {
+        return new Storage($directory);
+    }
+
+    protected function initRequest()
+    {
         $factory = new RequestFactory();
-        $this->request = $factory->create($key);
+        return $factory->create($key);
     }
 
     /**

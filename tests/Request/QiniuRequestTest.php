@@ -9,10 +9,8 @@ class QiniuRequestTest extends TestCase
 {
     public function testGetChunk()
     {
-//        $_GET['chunk'] = 3;
         $double = \Mockery::mock(QiniuRequest::class);
         $double->shouldAllowMockingProtectedMethods()->allows('getChunk');
-//        $double->setChunk();
         $this->assertEquals(null, $double->getChunk());
     }
 

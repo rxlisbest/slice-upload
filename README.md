@@ -53,3 +53,7 @@ $upload = new SliceUpload('文件存储目录');
 $upload->save('文件存储名称'); // 上传
 $upload->rename('文件旧名称', '文件新名称'); // 重命名
 ```
+
+# Credits
+We would like to express our gratitude to [JetBrains](https://www.jetbrains.com/?from=slice-upload "JetBrains") for their support of slice-upload with awesome suit of IDEs.
+![JetBrains](./docs/img/jetbrains.svg)

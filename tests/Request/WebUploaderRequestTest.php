@@ -5,7 +5,7 @@ namespace Rxlisbest\SliceUpload\Tests\Qiniu;
 use PHPUnit\Framework\TestCase;
 use Rxlisbest\SliceUpload\Request\QiniuRequest;
 
-class QiniuRequestTest extends TestCase
+class WebUploaderRequestTest extends TestCase
 {
 
     public function testGetChunk()

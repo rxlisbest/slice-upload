@@ -16,7 +16,11 @@ class SliceUploadTest extends TestCase
         $mock = \Mockery::mock('overload:\Rxlisbest\SliceUpload\Storage');
         $mock->shouldReceive('save')->once()->andReturn('a');
         $mock->shouldReceive('setKey')->andReturn($mock);
-        $mock->shouldReceive('setName');
+        $mock->shouldReceive('setChunk')->andReturn($mock);
+        $mock->shouldReceive('setName')->andReturn($mock);
+        $mock->shouldReceive('setChunks')->andReturn($mock);
+        $mock->shouldReceive('setTempDir')->andReturn($mock);
+        $mock->shouldReceive('setStream')->andReturn($mock);
 
         $requestMock = \Mockery::mock('overload:\Rxlisbest\SliceUpload\Request\WebUploaderRequest');
         $requestMock->shouldReceive('getChunk')->once()->andReturn(0);
@@ -25,19 +29,13 @@ class SliceUploadTest extends TestCase
         $requestMock->shouldReceive('getName')->andReturn('test.png');
         $requestMock->shouldReceive('getTempDir')->once()->andReturn('test.png');
         $requestMock->shouldReceive('getStream')->once()->andReturn('test.png');
+        $requestMock->shouldReceive('setChunk')->once()->andReturn($requestMock);
 
         $mock = \Mockery::mock('overload:\Rxlisbest\SliceUpload\RequestFactory');
         $mock->shouldAllowMockingProtectedMethods()->allows('getContentType')->andReturn('multipart/form-data');
-//        $mock->allows('getContentType')->andReturn('multipart/form-data');
-        $mock->shouldReceive('setKey')->andReturn($requestMock);
-        $mock->shouldReceive('setName')->andReturn($requestMock);
-        $mock->shouldReceive('setChunk')->andReturn($requestMock);
-        $mock->shouldReceive('setChunks')->andReturn($requestMock);
-        $mock->shouldReceive('setTempDir')->andReturn($requestMock);
-        $mock->shouldReceive('setStream')->andReturn($requestMock);
         $mock->allows('create')->andReturn($requestMock);
 
         $sliceUpload = new SliceUpload('test');
-//        $this->assertEquals('a', $sliceUpload->save('1'));
+        $this->assertEquals('a', $sliceUpload->save('1'));
     }
 }

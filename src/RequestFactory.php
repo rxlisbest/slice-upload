@@ -14,29 +14,24 @@ class RequestFactory
     protected function getContentType()
     {
         $header = getallheaders();
-        $content_type = '';
+        $contentType = '';
         foreach ($header as $k => $v) {
             if (strtolower($k) == 'content-type') {
-                $content_type = $v;
+                $contentTypeArr = array_filter(explode(';', $v));
+                $contentType = $contentTypeArr[0];
                 break;
             }
         }
-        return $content_type;
+        return $contentType;
     }
 
     public function create($key)
     {
-        $content_type = $this->getContentType();
-
-        if (isset($this->request[$content_type])) {
-            $request = new $this->request[$content_type];
-            $this->setKey($key)
-                ->setName()
-                ->setChunk()
-                ->setChunks()
-                ->setTempDir()
-                ->setStream();
-            return new $this->request[$content_type];
+        $contentType = $this->getContentType();
+        if (isset($this->request[$contentType])) {
+            $reflection = new \ReflectionClass($this->request[$contentType]);
+            $request = $reflection->newInstanceArgs();
+            return $request->setKey($key)->setName()->setChunk()->setTempDir()->setStream();
         }
         throw new \Exception("Content-Type is not to be supported.");
     }

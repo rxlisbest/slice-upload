@@ -31,8 +31,7 @@ class SliceUpload
 
     protected function initRequest($key)
     {
-        $factory = new RequestFactory();
-        return $factory->create($key);
+        return (new RequestFactory())->create($key);
     }
 
     /**

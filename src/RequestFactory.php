@@ -29,9 +29,13 @@ class RequestFactory
     {
         $contentType = $this->getContentType();
         if (isset($this->request[$contentType])) {
-            $reflection = new \ReflectionClass($this->request[$contentType]);
-            $request = $reflection->newInstanceArgs();
-            return $request->setKey($key)->setName()->setChunk()->setTempDir()->setStream();
+            $request = new $this->request[$contentType];
+            return $request
+                ->setKey($key)
+                ->setName()
+                ->setChunk()
+                ->setTempDir()
+                ->setStream();
         }
         throw new \Exception("Content-Type is not to be supported.");
     }

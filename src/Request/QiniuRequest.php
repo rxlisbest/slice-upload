@@ -8,6 +8,8 @@
 
 namespace Rxlisbest\SliceUpload\Request;
 
+use phpDocumentor\Reflection\Types\String_;
+
 class QiniuRequest implements RequestInterface
 {
     protected $key; // 文件存储名称
@@ -17,27 +19,27 @@ class QiniuRequest implements RequestInterface
     protected $temp_dir; // 临时目录
     protected $stream; // 文件流
 
-    public function getKey()
+    public function getKey(): string
     {
         return $this->key;
     }
 
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
-    public function getChunk()
+    public function getChunk(): int
     {
         return $this->chunk;
     }
 
-    public function getChunks()
+    public function getChunks(): int
     {
         return $this->chunks;
     }
 
-    public function getTempDir()
+    public function getTempDir(): string
     {
         return $this->temp_dir;
     }
@@ -54,7 +56,7 @@ class QiniuRequest implements RequestInterface
      * @author: RuiXinglong <ruixl@soocedu.com>
      * @time: 2017-06-19 10:00:00
      */
-    public function setChunk()
+    public function setChunk(): QiniuRequest
     {
         if (isset($_GET['chunk'])) {
             $this->chunk = $_GET['chunk'];
@@ -69,7 +71,7 @@ class QiniuRequest implements RequestInterface
      * @author: RuiXinglong <ruixl@soocedu.com>
      * @time: 2017-06-19 10:00:00
      */
-    public function setChunks()
+    public function setChunks(): QiniuRequest
     {
         if (isset($_GET['chunks'])) {
             $this->chunks = $_GET['chunks'];
@@ -85,7 +87,7 @@ class QiniuRequest implements RequestInterface
      * @author: RuiXinglong <ruixl@soocedu.com>
      * @time: 2017-06-19 10:00:00
      */
-    public function setKey($key)
+    public function setKey($key): QiniuRequest
     {
         $this->key = $key;
         return $this;
@@ -98,7 +100,7 @@ class QiniuRequest implements RequestInterface
      * @author: RuiXinglong <ruixl@soocedu.com>
      * @time: 2017-06-19 10:00:00
      */
-    public function setName()
+    public function setName(): QiniuRequest
     {
         if (isset($_GET['name'])) {
             $this->name = $_GET['name'];
@@ -113,7 +115,7 @@ class QiniuRequest implements RequestInterface
      * @author: RuiXinglong <ruixl@soocedu.com>
      * @time: 2017-06-19 10:00:00
      */
-    public function setTempDir()
+    public function setTempDir(): QiniuRequest
     {
         $this->temp_dir = sys_get_temp_dir();
         return $this;
@@ -126,7 +128,7 @@ class QiniuRequest implements RequestInterface
      * @author: RuiXinglong <ruixl@soocedu.com>
      * @time: 2017-06-19 10:00:00
      */
-    public function setStream()
+    public function setStream(): QiniuRequest
     {
         $this->stream = file_get_contents("php://input");
         return $this;

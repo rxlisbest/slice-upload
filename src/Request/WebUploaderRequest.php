@@ -17,27 +17,27 @@ class WebUploaderRequest implements RequestInterface
     protected $temp_dir; // 临时目录
     protected $stream; // 文件流
 
-    public function getKey()
+    public function getKey(): string
     {
         return $this->key;
     }
 
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
-    public function getChunk()
+    public function getChunk(): int
     {
         return $this->chunk;
     }
 
-    public function getChunks()
+    public function getChunks(): int
     {
         return $this->chunks;
     }
 
-    public function getTempDir()
+    public function getTempDir(): string
     {
         return $this->temp_dir;
     }
@@ -54,7 +54,7 @@ class WebUploaderRequest implements RequestInterface
      * @author: RuiXinglong <ruixl@soocedu.com>
      * @time: 2017-06-19 10:00:00
      */
-    public function setChunk()
+    public function setChunk(): WebUploaderRequest
     {
         if (isset($_POST['chunk'])) {
             $this->chunk = $_POST['chunk'];
@@ -69,7 +69,7 @@ class WebUploaderRequest implements RequestInterface
      * @author: RuiXinglong <ruixl@soocedu.com>
      * @time: 2017-06-19 10:00:00
      */
-    public function setChunks()
+    public function setChunks(): WebUploaderRequest
     {
         if (isset($_POST['chunks'])) {
             $this->chunks = $_POST['chunks'];
@@ -85,7 +85,7 @@ class WebUploaderRequest implements RequestInterface
      * @author: RuiXinglong <ruixl@soocedu.com>
      * @time: 2017-06-19 10:00:00
      */
-    public function setKey($key = '')
+    public function setKey($key = ''): WebUploaderRequest
     {
         if (isset($_POST['key'])) {
             $this->key = $_POST['key'];
@@ -103,7 +103,7 @@ class WebUploaderRequest implements RequestInterface
      * @author: RuiXinglong <ruixl@soocedu.com>
      * @time: 2017-06-19 10:00:00
      */
-    public function setName()
+    public function setName(): WebUploaderRequest
     {
         $this->name = $_POST['name'];
         return $this;
@@ -116,7 +116,7 @@ class WebUploaderRequest implements RequestInterface
      * @author: RuiXinglong <ruixl@soocedu.com>
      * @time: 2017-06-19 10:00:00
      */
-    public function setTempDir()
+    public function setTempDir(): WebUploaderRequest
     {
         $this->temp_dir = sys_get_temp_dir();
         return $this;
@@ -129,7 +129,7 @@ class WebUploaderRequest implements RequestInterface
      * @author: RuiXinglong <ruixl@soocedu.com>
      * @time: 2017-06-19 10:00:00
      */
-    public function setStream()
+    public function setStream(): WebUploaderRequest
     {
         $this->stream = file_get_contents($_FILES['file']['tmp_name']);
         return $this;

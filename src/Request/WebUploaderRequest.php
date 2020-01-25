@@ -42,7 +42,7 @@ class WebUploaderRequest implements RequestInterface
         return $this->temp_dir;
     }
 
-    public function getStream()
+    public function getStream(): string
     {
         return $this->stream;
     }

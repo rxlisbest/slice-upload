@@ -8,8 +8,6 @@
 
 namespace Rxlisbest\SliceUpload\Request;
 
-use phpDocumentor\Reflection\Types\String_;
-
 class QiniuRequest implements RequestInterface
 {
     protected $key; // 文件存储名称
@@ -44,7 +42,7 @@ class QiniuRequest implements RequestInterface
         return $this->temp_dir;
     }
 
-    public function getStream()
+    public function getStream(): string
     {
         return $this->stream;
     }

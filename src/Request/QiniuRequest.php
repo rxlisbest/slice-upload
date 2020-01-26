@@ -51,10 +51,10 @@ class QiniuRequest implements RequestInterface
      * 设置chunk
      * @name: setChunk
      * @return $this
-     * @author: RuiXinglong <ruixl@soocedu.com>
+     * @author: RuiXinglong <rxlisbest@163.com>
      * @time: 2017-06-19 10:00:00
      */
-    public function setChunk(): QiniuRequest
+    public function setChunk(): self
     {
         if (isset($_GET['chunk'])) {
             $this->chunk = $_GET['chunk'];
@@ -66,10 +66,10 @@ class QiniuRequest implements RequestInterface
      * 设置chunks
      * @name: setChunks
      * @return $this
-     * @author: RuiXinglong <ruixl@soocedu.com>
+     * @author: RuiXinglong <rxlisbest@163.com>
      * @time: 2017-06-19 10:00:00
      */
-    public function setChunks(): QiniuRequest
+    public function setChunks(): self
     {
         if (isset($_GET['chunks'])) {
             $this->chunks = $_GET['chunks'];
@@ -82,10 +82,10 @@ class QiniuRequest implements RequestInterface
      * @name: setKey
      * @param $key
      * @return $this
-     * @author: RuiXinglong <ruixl@soocedu.com>
+     * @author: RuiXinglong <rxlisbest@163.com>
      * @time: 2017-06-19 10:00:00
      */
-    public function setKey($key): QiniuRequest
+    public function setKey(string $key): self
     {
         $this->key = $key;
         return $this;
@@ -95,10 +95,10 @@ class QiniuRequest implements RequestInterface
      * 设置文件名称
      * @name: setName
      * @return $this
-     * @author: RuiXinglong <ruixl@soocedu.com>
+     * @author: RuiXinglong <rxlisbest@163.com>
      * @time: 2017-06-19 10:00:00
      */
-    public function setName(): QiniuRequest
+    public function setName(): self
     {
         if (isset($_GET['name'])) {
             $this->name = $_GET['name'];
@@ -110,10 +110,10 @@ class QiniuRequest implements RequestInterface
      * 设置临时目录
      * @name: setTempDir
      * @return $this
-     * @author: RuiXinglong <ruixl@soocedu.com>
+     * @author: RuiXinglong <rxlisbest@163.com>
      * @time: 2017-06-19 10:00:00
      */
-    public function setTempDir(): QiniuRequest
+    public function setTempDir(): self
     {
         $this->temp_dir = sys_get_temp_dir();
         return $this;
@@ -123,10 +123,10 @@ class QiniuRequest implements RequestInterface
      * 设置上传流
      * @name: setStream
      * @return $this
-     * @author: RuiXinglong <ruixl@soocedu.com>
+     * @author: RuiXinglong <rxlisbest@163.com>
      * @time: 2017-06-19 10:00:00
      */
-    public function setStream(): QiniuRequest
+    public function setStream(): self
     {
         $this->stream = file_get_contents("php://input");
         return $this;

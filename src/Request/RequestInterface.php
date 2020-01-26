@@ -10,27 +10,27 @@ namespace Rxlisbest\SliceUpload\Request;
 
 interface RequestInterface
 {
-    function getKey();
+    function getKey(): string;
 
-    function getName();
+    function getName(): string;
 
-    function getChunk();
+    function getChunk(): int;
 
-    function getChunks();
+    function getChunks(): int;
 
-    function getTempDir();
+    function getTempDir(): string;
 
-    function getStream();
+    function getStream(): string;
 
-    function setChunk();
+    function setChunk(): self;
 
-    function setChunks();
+    function setChunks(): self;
 
-    function setKey($key);
+    function setKey(string $key): self;
 
-    function setName();
+    function setName(): self;
 
-    function setTempDir();
+    function setTempDir(): self;
 
-    function setStream();
+    function setStream(): self;
 }

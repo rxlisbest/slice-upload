@@ -16,7 +16,7 @@ class SliceUpload
      * SliceUpload constructor.
      * @param bool $request
      */
-    public function __construct($directory)
+    public function __construct(string $directory)
     {
         if (!$directory) {
             throw new \Exception("Directory can not be empty.");
@@ -24,12 +24,12 @@ class SliceUpload
         $this->storage = $this->initStorage($directory);
     }
 
-    protected function initStorage($directory)
+    protected function initStorage(string $directory): Storage
     {
         return new Storage($directory);
     }
 
-    protected function initRequest($key)
+    protected function initRequest(string $key): object
     {
         return (new RequestFactory())->create($key);
     }
@@ -39,10 +39,10 @@ class SliceUpload
      * @name: save
      * @param $key
      * @return void
-     * @author: RuiXinglong <ruixl@soocedu.com>
+     * @author: RuiXinglong <rxlisbest@163.com>
      * @time: 2017-06-19 10:00:00
      */
-    public function save($key)
+    public function save($key): string
     {
         $request = $this->initRequest($key);
         return $this->storage
@@ -61,10 +61,10 @@ class SliceUpload
      * @param $old_key
      * @param $key
      * @return bool
-     * @author: RuiXinglong <ruixl@soocedu.com>
+     * @author: RuiXinglong <rxlisbest@163.com>
      * @time: 2017-06-19 10:00:00
      */
-    public function rename($old_key, $key)
+    public function rename($old_key, $key): string
     {
         return $this->storage->rename($old_key, $key);
     }

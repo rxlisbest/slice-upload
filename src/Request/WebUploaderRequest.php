@@ -51,10 +51,10 @@ class WebUploaderRequest implements RequestInterface
      * 设置chunk
      * @name: setChunk
      * @return $this
-     * @author: RuiXinglong <ruixl@soocedu.com>
+     * @author: RuiXinglong <rxlisbest@163.com>
      * @time: 2017-06-19 10:00:00
      */
-    public function setChunk(): WebUploaderRequest
+    public function setChunk(): self
     {
         if (isset($_POST['chunk'])) {
             $this->chunk = $_POST['chunk'];
@@ -66,10 +66,10 @@ class WebUploaderRequest implements RequestInterface
      * 设置chunks
      * @name: setChunks
      * @return $this
-     * @author: RuiXinglong <ruixl@soocedu.com>
+     * @author: RuiXinglong <rxlisbest@163.com>
      * @time: 2017-06-19 10:00:00
      */
-    public function setChunks(): WebUploaderRequest
+    public function setChunks(): self
     {
         if (isset($_POST['chunks'])) {
             $this->chunks = $_POST['chunks'];
@@ -82,10 +82,10 @@ class WebUploaderRequest implements RequestInterface
      * @name: setKey
      * @param $key
      * @return $this
-     * @author: RuiXinglong <ruixl@soocedu.com>
+     * @author: RuiXinglong <rxlisbest@163.com>
      * @time: 2017-06-19 10:00:00
      */
-    public function setKey($key = ''): WebUploaderRequest
+    public function setKey(string $key): self
     {
         if (isset($_POST['key'])) {
             $this->key = $_POST['key'];
@@ -100,10 +100,10 @@ class WebUploaderRequest implements RequestInterface
      * 设置文件名称
      * @name: setName
      * @return $this
-     * @author: RuiXinglong <ruixl@soocedu.com>
+     * @author: RuiXinglong <rxlisbest@163.com>
      * @time: 2017-06-19 10:00:00
      */
-    public function setName(): WebUploaderRequest
+    public function setName(): self
     {
         $this->name = $_POST['name'];
         return $this;
@@ -113,10 +113,10 @@ class WebUploaderRequest implements RequestInterface
      * 设置临时目录
      * @name: setTempDir
      * @return $this
-     * @author: RuiXinglong <ruixl@soocedu.com>
+     * @author: RuiXinglong <rxlisbest@163.com>
      * @time: 2017-06-19 10:00:00
      */
-    public function setTempDir(): WebUploaderRequest
+    public function setTempDir(): self
     {
         $this->temp_dir = sys_get_temp_dir();
         return $this;
@@ -126,10 +126,10 @@ class WebUploaderRequest implements RequestInterface
      * 设置上传流
      * @name: setStream
      * @return $this
-     * @author: RuiXinglong <ruixl@soocedu.com>
+     * @author: RuiXinglong <rxlisbest@163.com>
      * @time: 2017-06-19 10:00:00
      */
-    public function setStream(): WebUploaderRequest
+    public function setStream(): self
     {
         $this->stream = file_get_contents($_FILES['file']['tmp_name']);
         return $this;

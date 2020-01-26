@@ -29,7 +29,7 @@ class Storage
     /**
      * Storage constructor.
      */
-    public function __construct($directory)
+    public function __construct(string $directory)
     {
         if (!$directory) {
             throw new \Exception("Directory can not be empty.");
@@ -42,10 +42,10 @@ class Storage
      * @name: setChunk
      * @param $chunk
      * @return $this
-     * @author: RuiXinglong <ruixl@soocedu.com>
+     * @author: RuiXinglong <rxlisbest@163.com>
      * @time: 2017-06-19 10:00:00
      */
-    public function setChunk($chunk)
+    public function setChunk(int $chunk): self
     {
         if ($chunk) {
             $this->chunk = $chunk;
@@ -58,10 +58,10 @@ class Storage
      * @name: setChunks
      * @param $chunks
      * @return $this
-     * @author: RuiXinglong <ruixl@soocedu.com>
+     * @author: RuiXinglong <rxlisbest@163.com>
      * @time: 2017-06-19 10:00:00
      */
-    public function setChunks($chunks)
+    public function setChunks(int $chunks): self
     {
         if ($chunks) {
             $this->chunks = $chunks;
@@ -74,10 +74,10 @@ class Storage
      * @name: setKey
      * @param $key
      * @return $this
-     * @author: RuiXinglong <ruixl@soocedu.com>
+     * @author: RuiXinglong <rxlisbest@163.com>
      * @time: 2017-06-19 10:00:00
      */
-    public function setKey($key)
+    public function setKey(string $key): self
     {
         if (!$key) {
             throw new \Exception("Key can not be empty.");
@@ -91,10 +91,10 @@ class Storage
      * @name: setName
      * @param $name
      * @return $this
-     * @author: RuiXinglong <ruixl@soocedu.com>
+     * @author: RuiXinglong <rxlisbest@163.com>
      * @time: 2017-06-19 10:00:00
      */
-    public function setName($name)
+    public function setName(string $name): self
     {
         if (!$name) {
             throw new \Exception("Name can not be empty.");
@@ -108,10 +108,10 @@ class Storage
      * @name: setTempDir
      * @param $temp_dir
      * @return $this
-     * @author: RuiXinglong <ruixl@soocedu.com>
+     * @author: RuiXinglong <rxlisbest@163.com>
      * @time: 2017-06-19 10:00:00
      */
-    public function setTempDir($temp_dir)
+    public function setTempDir(string $temp_dir): self
     {
         if (!$temp_dir) {
             throw new \Exception("Temp dir can not be empty.");
@@ -125,10 +125,10 @@ class Storage
      * @name: setStream
      * @param $stream
      * @return $this
-     * @author: RuiXinglong <ruixl@soocedu.com>
+     * @author: RuiXinglong <rxlisbest@163.com>
      * @time: 2017-06-19 10:00:00
      */
-    public function setStream($stream)
+    public function setStream(string $stream): self
     {
         if (!$stream) {
             throw new \Exception("Stream can not be empty.");
@@ -142,10 +142,10 @@ class Storage
      * @name: save
      * @param $filename
      * @return void
-     * @author: RuiXinglong <ruixl@soocedu.com>
+     * @author: RuiXinglong <rxlisbest@163.com>
      * @time: 2017-06-19 10:00:00
      */
-    public function save()
+    public function save(): string
     {
         $filename = $this->dir . DS . $this->key;
         // 判断文件是否存在
@@ -221,22 +221,22 @@ class Storage
      * @name: getSliceFile
      * @param $chunk
      * @return string
-     * @author: RuiXinglong <ruixl@soocedu.com>
+     * @author: RuiXinglong <rxlisbest@163.com>
      * @time: 2017-06-19 10:00:00
      */
-    private function getSliceFile($filename, $chunk)
+    private function getSliceFile(string $filename, int $chunk): string
     {
-        return sprintf("%s_%s", $filename, $chunk);
+        return sprintf("%s_%d", $filename, $chunk);
     }
 
     /**
      * 获取文件锁
      * @name: getLockFile
      * @return string
-     * @author: RuiXinglong <ruixl@soocedu.com>
+     * @author: RuiXinglong <rxlisbest@163.com>
      * @time: 2017-06-19 10:00:00
      */
-    private function getLockFile()
+    private function getLockFile(): string
     {
         return sprintf("%s/%s.lock", $this->temp_dir, md5($this->key));
     }
@@ -246,10 +246,10 @@ class Storage
      * @name: getVerifyFileContent
      * @param $filename
      * @return bool|string
-     * @author: RuiXinglong <ruixl@soocedu.com>
+     * @author: RuiXinglong <rxlisbest@163.com>
      * @time: 2017-06-19 10:00:00
      */
-    private function getVerifyFileContent($filename)
+    private function getVerifyFileContent(string $filename): string
     {
         $md5 = md5_file($filename);
         $md5_filename = sprintf("%s/md5_%s", $this->temp_dir, $md5);
@@ -264,10 +264,10 @@ class Storage
      * @name: createVerifyFile
      * @param $filename
      * @return bool|int
-     * @author: RuiXinglong <ruixl@soocedu.com>
+     * @author: RuiXinglong <rxlisbest@163.com>
      * @time: 2017-06-19 10:00:00
      */
-    private function createVerifyFile($filename)
+    private function createVerifyFile(string $filename): string
     {
         $md5 = md5_file($filename);
         $md5_filename = sprintf("%s/md5_%s", $this->temp_dir, $md5);
@@ -279,10 +279,10 @@ class Storage
      * @name: deleteVerifyFile
      * @param $filename
      * @return bool
-     * @author: RuiXinglong <ruixl@soocedu.com>
+     * @author: RuiXinglong <rxlisbest@163.com>
      * @time: 2017-06-19 10:00:00
      */
-    private function deleteVerifyFile($filename)
+    private function deleteVerifyFile(string $filename): string
     {
         $md5 = md5_file($filename);
         $md5_filename = sprintf("%s/md5_%s", $this->temp_dir, $md5);
@@ -295,10 +295,10 @@ class Storage
      * @param $old_key
      * @param $key
      * @return bool
-     * @author: RuiXinglong <ruixl@soocedu.com>
+     * @author: RuiXinglong <rxlisbest@163.com>
      * @time: 2017-06-19 10:00:00
      */
-    public function rename($old_key, $key)
+    public function rename(string $old_key, string $key): string
     {
         if (!$key) {
             throw new \Exception("New file name can not be empty.");

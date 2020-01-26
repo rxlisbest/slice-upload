@@ -11,7 +11,7 @@ class RequestFactory
         'application/octet-stream' => 'Rxlisbest\SliceUpload\Request\QiniuRequest',
     ];
 
-    protected function getContentType()
+    protected function getContentType(): string
     {
         $header = getallheaders();
         $contentType = '';
@@ -25,7 +25,7 @@ class RequestFactory
         return $contentType;
     }
 
-    public function create($key)
+    public function create(string $key): object
     {
         $contentType = $this->getContentType();
         if (isset($this->request[$contentType])) {
@@ -42,7 +42,7 @@ class RequestFactory
 }
 
 if (!function_exists('getallheaders')) {
-    function getallheaders()
+    function getallheaders(): string
     {
         $headers = [];
         foreach ($_SERVER as $name => $value) {

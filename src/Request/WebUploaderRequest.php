@@ -10,12 +10,12 @@ namespace Rxlisbest\SliceUpload\Request;
 
 class WebUploaderRequest implements RequestInterface
 {
-    protected $key; // 文件存储名称
-    protected $name; // 文件名称
-    protected $chunk = 0; // 当前chunk数
-    protected $chunks = 1; // chunk总数
-    protected $temp_dir; // 临时目录
-    protected $stream; // 文件流
+    protected string $key; // 文件存储名称
+    protected string $name; // 文件名称
+    protected int $chunk = 0; // 当前chunk数
+    protected int  $chunks = 1; // chunk总数
+    protected string $temp_dir; // 临时目录
+    protected string $stream; // 文件流
 
     public function getKey(): string
     {

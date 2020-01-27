@@ -17,14 +17,14 @@ class Storage
     const STATUS_SUCCESS = 'success';
     const STATUS_FAILURE = 'failure';
 
-    private $key; // 文件存储名称
-    private $name; // 文件名称
-    private $chunk = 0; // 当前chunk数
-    private $chunks = 1; // chunk总数
-    private $temp_dir; // 临时目录
-    private $stream; // 文件流
+    private string $key; // 文件存储名称
+    private string $name; // 文件名称
+    private int $chunk = 0; // 当前chunk数
+    private string $chunks = 1; // chunk总数
+    private string $temp_dir; // 临时目录
+    private string $stream; // 文件流
 
-    private $dir; // 存储目录
+    private string $dir; // 存储目录
 
     /**
      * Storage constructor.

@@ -1,8 +1,13 @@
 # slice-upload
-- 安装
+## Requirement
+- php >= 7.4
+- composer
+
+## Installation
 ```
 composer require rxlisbest/slice-upload
 ```
+## Usage
 - Html
 ```
 <html>

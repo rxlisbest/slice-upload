@@ -20,7 +20,7 @@ class Storage
     private string $key; // 文件存储名称
     private string $name; // 文件名称
     private int $chunk = 0; // 当前chunk数
-    private string $chunks = 1; // chunk总数
+    private int $chunks = 1; // chunk总数
     private string $temp_dir; // 临时目录
     private string $stream; // 文件流
 

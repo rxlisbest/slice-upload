@@ -14,7 +14,7 @@ class QiniuRequest implements RequestInterface
     protected string $name; // 文件名称
     protected int $chunk = 0; // 当前chunk数
     protected int  $chunks = 1; // chunk总数
-    protected string $temp_dir; // 临时目录
+    protected string $tempDir; // 临时目录
     protected string $stream; // 文件流
 
     public function getKey(): string

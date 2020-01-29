@@ -21,7 +21,7 @@ class Storage
     private string $name; // 文件名称
     private int $chunk = 0; // 当前chunk数
     private int $chunks = 1; // chunk总数
-    private string $temp_dir; // 临时目录
+    private string $tempDir; // 临时目录
     private string $stream; // 文件流
 
     private string $dir; // 存储目录
@@ -106,17 +106,17 @@ class Storage
     /**
      * 设置临时目录
      * @name: setTempDir
-     * @param $temp_dir
+     * @param $tempDir
      * @return $this
      * @author: RuiXinglong <rxlisbest@163.com>
      * @time: 2017-06-19 10:00:00
      */
-    public function setTempDir(string $temp_dir): self
+    public function setTempDir(string $tempDir): self
     {
-        if (!$temp_dir) {
+        if (!$tempDir) {
             throw new \Exception("Temp dir can not be empty.");
         }
-        $this->temp_dir = $temp_dir;
+        $this->tempDir = $tempDir;
         return $this;
     }
 
@@ -153,8 +153,8 @@ class Storage
             throw new \Exception("File already exist.");
         }
         // upload
-        $slice_file = $this->getSliceFile($filename, $this->chunk);
-        $result = file_put_contents($slice_file, $this->stream);
+        $sliceFile = $this->getSliceFile($filename, $this->chunk);
+        $result = file_put_contents($sliceFile, $this->stream);
         if (!$result) {
             if ($this->chunks > 1) {
                 return self::STATUS_FAILURE;
@@ -162,7 +162,7 @@ class Storage
                 return self::STATUS_SLICE_FAILURE;
             }
         } else {
-            if (!$result = $this->createVerifyFile($slice_file)) {
+            if (!$result = $this->createVerifyFile($sliceFile)) {
                 if ($this->chunks > 1) {
                     return self::STATUS_FAILURE;
                 } else {
@@ -174,8 +174,8 @@ class Storage
         // 遍历检查分片是否全部上传
         $merge = true;
         for ($i = 0; $i < $this->chunks; $i++) {
-            $slice_file = $this->getSliceFile($filename, $i);
-            if (!is_file($slice_file) || !($md5 = $this->getVerifyFileContent($slice_file)) || md5_file($slice_file) != $md5) { // 如果分片没有全部上传，则不合并文件
+            $sliceFile = $this->getSliceFile($filename, $i);
+            if (!is_file($sliceFile) || !($md5 = $this->getVerifyFileContent($sliceFile)) || md5_file($sliceFile) != $md5) { // 如果分片没有全部上传，则不合并文件
                 $merge = false;
                 break;
             }
@@ -184,21 +184,21 @@ class Storage
         if ($merge) {
             $result = true; // 返回值
             // 增加并发状态的文件锁
-            $lock_file = $this->getLockFile();
+            $lockFile = $this->getLockFile();
             $fp = fopen($this->getLockFile(), 'w+');
             if (flock($fp, LOCK_EX | LOCK_NB)) {
                 for ($i = 0; $i < $this->chunks; $i++) {
-                    $slice_file = $this->getSliceFile($filename, $i);
-                    $stream0 = file_get_contents($slice_file);
+                    $sliceFile = $this->getSliceFile($filename, $i);
+                    $stream0 = file_get_contents($sliceFile);
                     $result = $result && file_put_contents($filename, $stream0, FILE_APPEND);
                     if ($result) {
-                        $this->deleteVerifyFile($slice_file);
-                        unlink($slice_file);
+                        $this->deleteVerifyFile($sliceFile);
+                        unlink($sliceFile);
                     }
                 }
                 flock($fp, LOCK_UN);
                 fclose($fp);
-                unlink($lock_file);
+                unlink($lockFile);
 
                 if ($result) {
                     return self::STATUS_SUCCESS;
@@ -238,7 +238,7 @@ class Storage
      */
     private function getLockFile(): string
     {
-        return sprintf("%s/%s.lock", $this->temp_dir, md5($this->key));
+        return sprintf("%s/%s.lock", $this->tempDir, md5($this->key));
     }
 
     /**
@@ -252,9 +252,9 @@ class Storage
     private function getVerifyFileContent(string $filename): string
     {
         $md5 = md5_file($filename);
-        $md5_filename = sprintf("%s/md5_%s", $this->temp_dir, $md5);
-        if ($result = is_file($md5_filename)) {
-            return file_get_contents($md5_filename);
+        $md5Filename = sprintf("%s/md5_%s", $this->tempDir, $md5);
+        if ($result = is_file($md5Filename)) {
+            return file_get_contents($md5Filename);
         }
         return $result;
     }
@@ -270,8 +270,8 @@ class Storage
     private function createVerifyFile(string $filename): string
     {
         $md5 = md5_file($filename);
-        $md5_filename = sprintf("%s/md5_%s", $this->temp_dir, $md5);
-        return file_put_contents($md5_filename, $md5);
+        $md5Filename = sprintf("%s/md5_%s", $this->tempDir, $md5);
+        return file_put_contents($md5Filename, $md5);
     }
 
     /**
@@ -285,33 +285,33 @@ class Storage
     private function deleteVerifyFile(string $filename): string
     {
         $md5 = md5_file($filename);
-        $md5_filename = sprintf("%s/md5_%s", $this->temp_dir, $md5);
-        return unlink($md5_filename);
+        $md5Filename = sprintf("%s/md5_%s", $this->tempDir, $md5);
+        return unlink($md5Filename);
     }
 
     /**
      * 文件重命名
      * @name: rename
-     * @param $old_key
+     * @param $oldKey
      * @param $key
      * @return bool
      * @author: RuiXinglong <rxlisbest@163.com>
      * @time: 2017-06-19 10:00:00
      */
-    public function rename(string $old_key, string $key): string
+    public function rename(string $oldKey, string $key): string
     {
         if (!$key) {
             throw new \Exception("New file name can not be empty.");
         }
-        $old_filename = $this->dir . DS . $old_key;
-        if (!is_file($old_filename)) {
+        $oldFilename = $this->dir . DS . $oldKey;
+        if (!is_file($oldFilename)) {
             throw new \Exception("Source file is not exist.");
         }
 
-        $new_filename = $this->dir . DS . $key;
-        if (is_file($new_filename)) {
+        $newFilename = $this->dir . DS . $key;
+        if (is_file($newFilename)) {
             throw new \Exception("Renamed file is already exist.");
         }
-        return rename($old_filename, $new_filename);
+        return rename($oldFilename, $newFilename);
     }
 }

@@ -3,7 +3,6 @@
 
 namespace Rxlisbest\SliceUpload;
 
-
 class RequestFactory
 {
     protected $request = [

@@ -10,7 +10,7 @@ namespace Rxlisbest\SliceUpload;
 
 class SliceUpload
 {
-    protected $storage; // 存储类
+    protected Storage $storage; // 存储类
 
     /**
      * SliceUpload constructor.
@@ -58,14 +58,14 @@ class SliceUpload
     /**
      * 重命名文件
      * @name: rename
-     * @param $old_key
+     * @param $oldKey
      * @param $key
      * @return bool
      * @author: RuiXinglong <rxlisbest@163.com>
      * @time: 2017-06-19 10:00:00
      */
-    public function rename($old_key, $key): string
+    public function rename($oldKey, $key): string
     {
-        return $this->storage->rename($old_key, $key);
+        return $this->storage->rename($oldKey, $key);
     }
 }

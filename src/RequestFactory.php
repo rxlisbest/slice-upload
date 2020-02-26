@@ -3,6 +3,8 @@
 
 namespace Rxlisbest\SliceUpload;
 
+use Rxlisbest\SliceUpload\Utils\Request;
+
 class RequestFactory
 {
     protected $request = [
@@ -12,7 +14,7 @@ class RequestFactory
 
     protected function getContentType(): string
     {
-        $header = getallheaders();
+        $header = Request::getHeaders();
         $contentType = '';
         foreach ($header as $k => $v) {
             if (strtolower($k) == 'content-type') {
@@ -37,18 +39,5 @@ class RequestFactory
                 ->setStream();
         }
         throw new \Exception("Content-Type is not to be supported.");
-    }
-}
-
-if (!function_exists('getallheaders')) {
-    function getallheaders(): string
-    {
-        $headers = [];
-        foreach ($_SERVER as $name => $value) {
-            if (substr($name, 0, 5) == 'HTTP_') {
-                $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value;
-            }
-        }
-        return $headers;
     }
 }

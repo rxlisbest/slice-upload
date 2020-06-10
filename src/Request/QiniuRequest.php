@@ -8,127 +8,80 @@
 
 namespace Rxlisbest\SliceUpload\Request;
 
-class QiniuRequest implements RequestInterface
+use http\Exception\InvalidArgumentException;
+use http\Exception\RuntimeException;
+use Psr\Http\Message\UploadedFileInterface;
+
+class QiniuRequest implements UploadedFileChunkInterface
 {
-    protected string $key; // 文件存储名称
-    protected string $name; // 文件名称
-    protected int $chunk = 0; // 当前chunk数
-    protected int  $chunks = 1; // chunk总数
-    protected string $tempDir; // 临时目录
-    protected string $stream; // 文件流
-
-    public function getKey(): string
-    {
-        return $this->key;
-    }
-
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    public function getChunk(): int
-    {
-        return $this->chunk;
-    }
-
-    public function getChunks(): int
-    {
-        return $this->chunks;
-    }
-
-    public function getTempDir(): string
-    {
-        return $this->temp_dir;
-    }
-
+    /**
+     * @return string
+     */
     public function getStream(): string
     {
-        return $this->stream;
+        return file_get_contents("php://input");
     }
 
     /**
-     * 设置chunk
-     * @name: setChunk
-     * @return $this
-     * @author: RuiXinglong <rxlisbest@163.com>
-     * @time: 2017-06-19 10:00:00
+     * @return int|mixed|null
      */
-    public function setChunk(): self
+    public function getSize()
     {
-        if (isset($_GET['chunk'])) {
-            $this->chunk = $_GET['chunk'];
+        return $_FILES['file']['size'];
+    }
+
+    /**
+     * @return mixed|string|null
+     */
+    public function getClientFilename()
+    {
+        return $_GET['name'];
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getClientMediaType()
+    {
+        return mime_content_type($_GET['name']);
+    }
+
+    /**
+     * @return int
+     */
+    public function getError()
+    {
+        return UPLOAD_ERR_OK;
+    }
+
+    /**
+     * @param string $targetPath
+     * @return false|int
+     */
+    public function moveTo($targetPath)
+    {
+        if (!file_get_contents("php://input")) {
+            throw new InvalidArgumentException('Invalid file');
         }
-        return $this;
-    }
-
-    /**
-     * 设置chunks
-     * @name: setChunks
-     * @return $this
-     * @author: RuiXinglong <rxlisbest@163.com>
-     * @time: 2017-06-19 10:00:00
-     */
-    public function setChunks(): self
-    {
-        if (isset($_GET['chunks'])) {
-            $this->chunks = $_GET['chunks'];
+        if (!$res = file_put_contents($targetPath, file_get_contents("php://input"))) {
+            throw new RuntimeException('Upload failed');
         }
-        return $this;
+        return $res;
     }
 
     /**
-     * 设置文件存储名称
-     * @name: setKey
-     * @param $key
-     * @return $this
-     * @author: RuiXinglong <rxlisbest@163.com>
-     * @time: 2017-06-19 10:00:00
+     * @return int
      */
-    public function setKey(string $key): self
+    public function getChunk(): int
     {
-        $this->key = $key;
-        return $this;
+        return $_GET['chunk'] ?? 0;
     }
 
     /**
-     * 设置文件名称
-     * @name: setName
-     * @return $this
-     * @author: RuiXinglong <rxlisbest@163.com>
-     * @time: 2017-06-19 10:00:00
+     * @return int
      */
-    public function setName(): self
+    public function getChunks(): int
     {
-        if (isset($_GET['name'])) {
-            $this->name = $_GET['name'];
-        }
-        return $this;
-    }
-
-    /**
-     * 设置临时目录
-     * @name: setTempDir
-     * @return $this
-     * @author: RuiXinglong <rxlisbest@163.com>
-     * @time: 2017-06-19 10:00:00
-     */
-    public function setTempDir(): self
-    {
-        $this->temp_dir = sys_get_temp_dir();
-        return $this;
-    }
-
-    /**
-     * 设置上传流
-     * @name: setStream
-     * @return $this
-     * @author: RuiXinglong <rxlisbest@163.com>
-     * @time: 2017-06-19 10:00:00
-     */
-    public function setStream(): self
-    {
-        $this->stream = file_get_contents("php://input");
-        return $this;
+        return $_GET['chunks'] ?? 1;
     }
 }

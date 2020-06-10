@@ -8,61 +8,51 @@
 
 namespace Rxlisbest\SliceUpload;
 
+use Rxlisbest\SliceUpload\Exception\InvalidArgumentException;
+use Rxlisbest\SliceUpload\Request\WebUploaderRequest;
+
 class SliceUpload
 {
     protected Storage $storage; // 存储类
 
     /**
      * SliceUpload constructor.
-     * @param bool $request
+     * @param string $directory
+     * @throws InvalidArgumentException
      */
     public function __construct(string $directory)
     {
         if (!$directory) {
-            throw new \Exception("Directory can not be empty.");
+            throw new InvalidArgumentException("Directory can not be empty.");
         }
         $this->storage = $this->initStorage($directory);
     }
 
+    /**
+     * @param string $directory
+     * @return Storage
+     * @throws InvalidArgumentException
+     */
     protected function initStorage(string $directory): Storage
     {
         return new Storage($directory);
     }
 
-    protected function initRequest(string $key): object
-    {
-        return (new RequestFactory())->create($key);
-    }
-
-    /**
-     * 保存
-     * @name: save
-     * @param $key
-     * @return void
-     * @author: RuiXinglong <rxlisbest@163.com>
-     * @time: 2017-06-19 10:00:00
-     */
     public function save($key): string
     {
-        $request = $this->initRequest($key);
+        $request = RequestFactory::create();
         return $this->storage
-            ->setKey($request->getKey())
-            ->setName($request->getName())
-            ->setChunk($request->getChunk())
-            ->setChunks($request->getChunks())
-            ->setTempDir($request->getTempDir())
-            ->setStream($request->getStream())
+            ->setRequest($request)
+            ->setKey($key)
             ->save();
     }
 
     /**
-     * 重命名文件
-     * @name: rename
      * @param $oldKey
      * @param $key
-     * @return bool
-     * @author: RuiXinglong <rxlisbest@163.com>
-     * @time: 2017-06-19 10:00:00
+     * @return string
+     * @throws Exception\StorageException
+     * @throws InvalidArgumentException
      */
     public function rename($oldKey, $key): string
     {

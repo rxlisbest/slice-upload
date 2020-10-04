@@ -8,8 +8,6 @@
 
 namespace Rxlisbest\SliceUpload\Request;
 
-use http\Exception\InvalidArgumentException;
-use http\Exception\RuntimeException;
 use Psr\Http\Message\UploadedFileInterface;
 
 class QiniuRequest implements UploadedFileChunkInterface
@@ -23,25 +21,25 @@ class QiniuRequest implements UploadedFileChunkInterface
     }
 
     /**
-     * @return int|mixed|null
+     * @return int
      */
-    public function getSize()
+    public function getSize(): int
     {
         return $_FILES['file']['size'];
     }
 
     /**
-     * @return mixed|string|null
+     * @return string
      */
-    public function getClientFilename()
+    public function getClientFilename(): string
     {
         return $_GET['name'];
     }
 
     /**
-     * @return string|null
+     * @return string
      */
-    public function getClientMediaType()
+    public function getClientMediaType(): string
     {
         return mime_content_type($_GET['name']);
     }
@@ -49,24 +47,22 @@ class QiniuRequest implements UploadedFileChunkInterface
     /**
      * @return int
      */
-    public function getError()
+    public function getError(): int
     {
         return UPLOAD_ERR_OK;
     }
 
     /**
      * @param string $targetPath
-     * @return false|int
      */
     public function moveTo($targetPath)
     {
         if (!file_get_contents("php://input")) {
-            throw new InvalidArgumentException('Invalid file');
+            throw new \InvalidArgumentException('Invalid file');
         }
-        if (!$res = file_put_contents($targetPath, file_get_contents("php://input"))) {
-            throw new RuntimeException('Upload failed');
+        if (!file_put_contents($targetPath, file_get_contents("php://input"))) {
+            throw new \RuntimeException('Upload failed');
         }
-        return $res;
     }
 
     /**

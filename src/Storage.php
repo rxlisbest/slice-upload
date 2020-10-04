@@ -9,6 +9,7 @@
 namespace Rxlisbest\SliceUpload;
 
 use Rxlisbest\SliceUpload\Exception\InvalidArgumentException;
+use Rxlisbest\SliceUpload\Exception\RuntimeException;
 use Rxlisbest\SliceUpload\Exception\StorageException;
 use Rxlisbest\SliceUpload\Request\UploadedFileChunkInterface;
 
@@ -74,14 +75,15 @@ class Storage
         }
         // upload
         $sliceFile = $this->getSliceFile($filename, $this->request->getChunk());
-        $result = $this->request->moveTo($sliceFile);
-        if (!$result) {
+        try {
+            $this->request->moveTo($sliceFile);
+        } catch (InvalidArgumentException | RuntimeException $e) {
             if ($this->request->getChunks() > 1) {
                 return self::STATUS_FAILURE;
             } else {
                 return self::STATUS_SLICE_FAILURE;
             }
-        } else {
+        } finally {
             if (!$result = $this->createVerifyFile($sliceFile)) {
                 if ($this->request->getChunks() > 1) {
                     return self::STATUS_FAILURE;

@@ -9,8 +9,6 @@
 namespace Rxlisbest\SliceUpload\Request;
 
 use Psr\Http\Message\UploadedFileInterface;
-use Rxlisbest\SliceUpload\Exception\InvalidArgumentException;
-use Rxlisbest\SliceUpload\Exception\RuntimeException;
 
 class WebUploaderRequest implements UploadedFileChunkInterface
 {
@@ -56,19 +54,15 @@ class WebUploaderRequest implements UploadedFileChunkInterface
 
     /**
      * @param string $targetPath
-     * @return bool
-     * @throws InvalidArgumentException
-     * @throws RuntimeException
      */
     public function moveTo($targetPath)
     {
         if (!is_uploaded_file($_FILES['file']['tmp_name'])) {
-            throw new InvalidArgumentException('Invalid file');
+            throw new \InvalidArgumentException('Invalid file');
         }
-        if (!$res = move_uploaded_file($_FILES['file']['tmp_name'], $targetPath)){
-            throw new RuntimeException('Upload failed');
+        if (!move_uploaded_file($_FILES['file']['tmp_name'], $targetPath)){
+            throw new \RuntimeException('Upload failed');
         }
-        return $res;
     }
 
     /**
